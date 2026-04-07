@@ -1,11 +1,3649 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>PakePlus</title>
-    </head>
-    <body>
-        PakePlus
-    </body>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>美妆工资记录</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        input, textarea {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #1e2832 0%, #161d24 100%);
+            color: #b8c4cc;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* 拟态风格基础样式 - 暗色版本 */
+        .neumorphic {
+            background: #232d36;
+            border-radius: 12px;
+            box-shadow: 
+                4px 4px 8px #141a20,
+                -4px -4px 8px #323f4a;
+            transition: all 0.2s ease;
+        }
+
+        .neumorphic-inset {
+            background: #232d36;
+            border-radius: 12px;
+            box-shadow: 
+                inset 4px 4px 8px #141a20,
+                inset -4px -4px 8px #323f4a;
+        }
+
+        /* 顶部标题栏 - 暗色 */
+        .header {
+            background: linear-gradient(135deg, #2a3640 0%, #1e2832 100%);
+            color: #a8b8c0;
+            padding: 12px 12px;
+            text-align: center;
+            position: relative;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .header .subtitle {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            margin-top: 3px;
+        }
+
+        /* 页面容器 */
+        .page {
+            display: none;
+            min-height: calc(100vh - 80px);
+            padding: 12px 10px;
+            padding-bottom: 60px;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 卡片样式 - 暗色 */
+        .card {
+            background: #232d36;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 12px;
+            box-shadow: 
+                3px 3px 6px #141a20,
+                -3px -3px 6px #323f4a;
+        }
+
+        .card-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: #7aa89a;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 表单样式 - 暗色 */
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            margin-bottom: 5px;
+            color: #8a9aa8;
+            font-weight: 400;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px 10px;
+            border: none;
+            border-radius: 8px;
+            background: #1e2832;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            color: #b8c4cc;
+        }
+
+        .form-control:focus {
+            outline: none;
+            background: #1a2228;
+        }
+
+        textarea.form-control {
+            min-height: 60px;
+            resize: vertical;
+        }
+
+        /* 自定义日期选择器按钮 */
+        .date-button {
+            width: 100%;
+            padding: 8px 10px;
+            border: none;
+            border-radius: 8px;
+            background: #1e2832;
+            font-size: 0.85rem;
+            color: #b8c4cc;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .date-button:hover {
+            background: #1a2228;
+        }
+
+        .date-button::after {
+            content: '▼';
+            float: right;
+            color: #6a7a88;
+            font-size: 0.7rem;
+        }
+
+        /* 按钮样式 - 暗色 */
+        .btn {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: all 0.2s;
+            background: #5a8a7a;
+            color: #e8f0ed;
+        }
+
+        .btn:hover {
+            background: #4a7a6a;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: #8a6a7a;
+            color: #f0e8ed;
+        }
+
+        .btn-secondary:hover {
+            background: #7a5a6a;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #5a8a7a;
+            color: #7aa89a;
+        }
+
+        .btn-outline:hover {
+            background: rgba(90, 138, 122, 0.1);
+        }
+
+        /* 统计卡片网格 - 暗色 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .stat-card {
+            background: #1e2832;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #7aa89a;
+            margin: 3px 0;
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: #6a7a88;
+        }
+
+        /* 阶梯列表 - 暗色 */
+        .tier-list {
+            margin-top: 10px;
+        }
+
+        .tier-item {
+            background: #1e2832;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tier-info {
+            flex: 1;
+        }
+
+        .tier-header {
+            font-weight: 500;
+            color: #7aa89a;
+            margin-bottom: 2px;
+            font-size: 0.85rem;
+        }
+
+        .tier-range {
+            font-size: 0.75rem;
+            color: #6a7a88;
+        }
+
+        .tier-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .tier-btn {
+            width: auto;
+            padding: 5px 8px;
+            font-size: 0.7rem;
+            border-radius: 5px;
+        }
+
+        /* 记录卡片 - 暗色 */
+        .record-card {
+            background: #1e2832;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+
+        .record-card:hover {
+            transform: translateY(-1px);
+        }
+
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .record-date {
+            font-weight: 500;
+            color: #7aa89a;
+            font-size: 0.85rem;
+        }
+
+        .record-badge {
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            background: #5a8a7a;
+            color: #e8f0ed;
+        }
+
+        .record-amount {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #b8c4cc;
+            margin: 3px 0;
+        }
+
+        .record-commission {
+            font-size: 0.8rem;
+            color: #6a9a7a;
+            margin: 3px 0;
+        }
+
+        .record-note {
+            font-size: 0.75rem;
+            color: #8a9aa8;
+            margin-top: 5px;
+            line-height: 1.3;
+        }
+
+        .record-images {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .record-image {
+            width: 45px;
+            height: 45px;
+            border-radius: 6px;
+            object-fit: cover;
+            border: 1px solid #3a4a58;
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+
+        .record-image:hover {
+            transform: scale(1.08);
+            border-color: #5a8a7a;
+        }
+
+        .record-time {
+            font-size: 0.7rem;
+            color: #6a7a88;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        /* 上传区域 */
+        .upload-area {
+            border: 2px dashed #3a4a58;
+            border-radius: 12px;
+            padding: 20px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #1a2430;
+        }
+
+        .upload-area:hover {
+            border-color: #5a8a7a;
+            background: #1a2a2a;
+        }
+
+        .upload-area.dragover {
+            border-color: #7aa89a;
+            background: #1a3a2a;
+        }
+
+        .upload-icon {
+            font-size: 1.8rem;
+            margin-bottom: 6px;
+        }
+
+        .upload-text {
+            color: #8a9aa8;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+
+        .upload-hint {
+            color: #5a6a78;
+            font-size: 0.8rem;
+        }
+
+        .upload-preview {
+            margin-top: 15px;
+        }
+
+        .preview-item {
+            position: relative;
+            display: inline-block;
+            margin: 5px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .preview-item img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+        }
+
+        .preview-remove {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            width: 22px;
+            height: 22px;
+            background: #a85a5a;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .preview-remove:hover {
+            background: #c86a6a;
+            transform: scale(1.1);
+        }
+
+        .upload-progress {
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: #2a3a48;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5a8a7a, #7aa89a);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            color: #8a9aa8;
+            margin-top: 5px;
+        }
+
+        /* 图库模态框 */
+        .gallery-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gallery-modal.active {
+            display: flex;
+        }
+
+        .gallery-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gallery-header {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .gallery-counter {
+            color: #c8d4dc;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .gallery-close {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #e8f0ed;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 10px 14px;
+            border-radius: 10px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gallery-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
+        }
+
+        .gallery-download {
+            background: linear-gradient(135deg, #5a8a7a 0%, #4a7a6a 100%);
+            border: 2px solid #6a9a8a;
+            color: #e8f0ed;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 10px 18px;
+            border-radius: 10px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 10px rgba(90, 138, 122, 0.3);
+        }
+
+        .gallery-download:hover {
+            background: linear-gradient(135deg, #6a9a8a 0%, #5a8a7a 100%);
+            border-color: #7aaa9a;
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(90, 138, 122, 0.4);
+        }
+
+        .gallery-download:active {
+            transform: scale(0.98);
+        }
+
+        .gallery-main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gallery-image-container {
+            max-width: 90%;
+            max-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gallery-image {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .gallery-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gallery-nav:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .gallery-nav:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .gallery-nav.prev {
+            left: 20px;
+        }
+
+        .gallery-nav.next {
+            right: 20px;
+        }
+
+        /* 底部导航栏 - 暗色 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #232d36;
+            display: flex;
+            justify-content: space-around;
+            padding: 6px 0;
+            z-index: 1000;
+            border-top: 1px solid #1a2228;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 5px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+        }
+
+        .nav-item.active {
+            background: #5a8a7a;
+            color: #e8f0ed;
+        }
+
+        .nav-item.active i,
+        .nav-item.active span {
+            color: #e8f0ed;
+        }
+
+        .nav-item i {
+            font-size: 1rem;
+            color: #6a7a88;
+        }
+
+        .nav-item.active i {
+            color: #e8f0ed;
+        }
+
+        .nav-item span {
+            font-size: 0.65rem;
+            color: #6a7a88;
+            font-weight: 400;
+        }
+
+        .nav-item.active span {
+            color: #e8f0ed;
+            font-weight: 500;
+        }
+
+        /* 模态框样式 - 暗色 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #232d36;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 10px 15px;
+            border-bottom: 1px solid #1a2228;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #7aa89a;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            color: #6a7a88;
+        }
+
+        .modal-body {
+            padding: 15px;
+        }
+
+        /* 图片预览 */
+        .image-preview {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: 1px solid #3a4a58;
+            background: #1a2228;
+        }
+
+        /* 上传区域 */
+        .upload-area {
+            border: 1px dashed #3a4a58;
+            border-radius: 8px;
+            padding: 20px 15px;
+            text-align: center;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #1a2228;
+        }
+
+        .upload-area:hover {
+            border-color: #5a8a7a;
+            background: rgba(90, 138, 122, 0.05);
+        }
+
+        .upload-area i {
+            font-size: 1.8rem;
+            color: #6a7a88;
+            margin-bottom: 8px;
+        }
+
+        .upload-area p {
+            color: #8a9aa8;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 25px 15px;
+            color: #6a7a88;
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        /* 滚动条 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1e2832;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3a4a58;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4a5a68;
+        }
+
+        /* 响应式 */
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1rem;
+            }
+            
+            .form-control,
+            .date-button {
+                padding: 7px 9px;
+                font-size: 0.8rem;
+            }
+            
+            .btn {
+                padding: 8px;
+                font-size: 0.8rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .record-amount {
+                font-size: 0.95rem;
+            }
+        }
+
+        /* 自定义日期选择器模态框 */
+        .date-picker-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2500;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .date-picker-modal.show {
+            display: flex;
+        }
+
+        .date-picker-content {
+            background: #232d36;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 320px;
+            padding: 15px;
+        }
+
+        .date-picker-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #1a2228;
+        }
+
+        .date-picker-title {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #7aa89a;
+        }
+
+        .date-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .month-year {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #b8c4cc;
+        }
+
+        .nav-btn {
+            background: #1e2832;
+            border: none;
+            color: #7aa89a;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .nav-btn:active {
+            background: #1a2228;
+        }
+
+        .days-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-weight: 500;
+            color: #6a7a88;
+            margin-bottom: 8px;
+            font-size: 0.75rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 3px;
+        }
+
+        .day-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.15s;
+            color: #b8c4cc;
+        }
+
+        .day-cell:hover:not(.disabled) {
+            background: #5a8a7a;
+            color: #e8f0ed;
+        }
+
+        .day-cell.selected {
+            background: #5a8a7a;
+            color: #e8f0ed;
+            font-weight: 500;
+        }
+
+        .day-cell.disabled {
+            color: #4a5a68;
+            cursor: not-allowed;
+        }
+
+        .day-cell.today {
+            border: 1px solid #5a8a7a;
+        }
+
+        .date-picker-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .date-action-btn {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+
+        .confirm-btn {
+            background: #5a8a7a;
+            color: #e8f0ed;
+        }
+
+        .cancel-btn {
+            background: #8a6a7a;
+            color: #f0e8ed;
+        }
+
+        .confirm-btn:active,
+        .cancel-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 月份选择器样式 */
+        .month-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .month-cell {
+            padding: 12px 8px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.15s;
+            color: #b8c4cc;
+            background: #1e2832;
+        }
+
+        .month-cell:hover {
+            background: #5a8a7a;
+            color: #e8f0ed;
+        }
+
+        .month-cell.selected {
+            background: #5a8a7a;
+            color: #e8f0ed;
+            font-weight: 500;
+        }
+
+        .month-cell.current {
+            border: 1px solid #5a8a7a;
+        }
+
+        /* 标签 */
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: #5a8a7a;
+            color: #e8f0ed;
+        }
+
+        .badge-warning {
+            background: #8a7a5a;
+            color: #f0ede8;
+        }
+
+        /* 分割线 */
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, #3a4a58, transparent);
+            margin: 12px 0;
+        }
+
+        /* 自定义弹窗样式 */
+        .custom-dialog-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.15s ease-out;
+        }
+
+        .custom-dialog-overlay.show {
+            display: flex;
+        }
+
+        .custom-dialog {
+            background: #232d36;
+            border-radius: 10px;
+            width: 85%;
+            max-width: 300px;
+            overflow: hidden;
+            animation: slideUp 0.2s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .custom-dialog-header {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid #1a2228;
+        }
+
+        .custom-dialog-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #7aa89a;
+        }
+
+        .custom-dialog-body {
+            padding: 20px 15px;
+            text-align: center;
+        }
+
+        .custom-dialog-message {
+            font-size: 0.85rem;
+            color: #b8c4cc;
+            line-height: 1.5;
+        }
+
+        .custom-dialog-footer {
+            display: flex;
+            border-top: 1px solid #1a2228;
+        }
+
+        .custom-dialog-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            color: #8a9aa8;
+        }
+
+        .custom-dialog-btn:hover {
+            background: #1e2832;
+        }
+
+        .custom-dialog-btn.primary {
+            color: #7aa89a;
+        }
+
+        .custom-dialog-btn.danger {
+            color: #a87a7a;
+        }
+
+        .custom-dialog-btn:not(:last-child) {
+            border-right: 1px solid #1a2228;
+        }
+
+        .record-type-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .type-option {
+            flex: 1;
+            padding: 10px 5px;
+            background: #182028;
+            border: 2px solid #203040;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            opacity: 0.5;
+        }
+
+        .type-option:hover {
+            opacity: 0.7;
+            border-color: #304050;
+        }
+
+        .type-option.active {
+            opacity: 1;
+            border-color: #8ab8a8;
+            background: #1a2a2a;
+            box-shadow: 0 0 10px rgba(138, 184, 168, 0.2);
+        }
+
+        .type-option.active[data-type="leave"] {
+            border-color: #c88a8a;
+            background: #2a1a1a;
+            box-shadow: 0 0 10px rgba(200, 138, 138, 0.2);
+        }
+
+        .type-option.active[data-type="transfer"] {
+            border-color: #8ab898;
+            background: #1a2a1a;
+            box-shadow: 0 0 10px rgba(138, 184, 152, 0.2);
+        }
+
+        .type-icon {
+            display: block;
+            font-size: 1.2rem;
+            margin-bottom: 3px;
+            filter: grayscale(0.5);
+            transition: all 0.2s;
+        }
+
+        .type-option.active .type-icon {
+            filter: grayscale(0);
+        }
+
+        .type-text {
+            font-size: 0.7rem;
+            color: #5a6a78;
+            transition: all 0.2s;
+        }
+
+        .type-option.active .type-text {
+            color: #c8d4dc;
+            font-weight: 500;
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-tab {
+            flex: 1;
+            padding: 8px;
+            background: #1e2832;
+            border: 1px solid #2a3a4a;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #8a9aa8;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-tab:hover {
+            border-color: #3a4a5a;
+        }
+
+        .filter-tab.active {
+            border-color: #7aa89a;
+            color: #7aa89a;
+            background: #1a2a2a;
+        }
+
+        .record-type-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            margin-left: 5px;
+        }
+
+        .record-type-badge.normal {
+            background: #1a3a2a;
+            color: #7aa89a;
+        }
+
+        .record-type-badge.transfer {
+            background: #2a3a1a;
+            color: #9aaa7a;
+        }
+
+        .record-type-badge.leave {
+            background: #3a1a1a;
+            color: #aa7a7a;
+        }
+
+        .day-query-summary {
+            padding: 12px;
+            background: #1e2832;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .day-query-summary .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            font-size: 0.8rem;
+        }
+
+        .day-query-summary .summary-label {
+            color: #8a9aa8;
+        }
+
+        .day-query-summary .summary-value {
+            color: #b8c4cc;
+        }
+
+        .day-query-summary .summary-value.highlight {
+            color: #7aa89a;
+            font-weight: 500;
+        }
+
+        .selected-dates-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .date-tag {
+            display: inline-flex;
+            align-items: center;
+            background: #2a4a3a;
+            border: 1px solid #3a6a4a;
+            border-radius: 16px;
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            color: #8aba9a;
+        }
+
+        .date-tag .remove-tag {
+            margin-left: 6px;
+            cursor: pointer;
+            color: #6a8a7a;
+            font-size: 1rem;
+            line-height: 1;
+        }
+
+        .date-tag .remove-tag:hover {
+            color: #aa7a7a;
+        }
+
+        .calendar-day.multi-selected {
+            background: #2a4a3a !important;
+            color: #8aba9a !important;
+            border-color: #4a7a5a !important;
+        }
+
+        .calendar-day.multi-selected:hover {
+            background: #3a5a4a !important;
+        }
+
+        .day-picker-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 15px 0;
+            border-top: 1px solid #3a4a5a;
+            margin-top: 10px;
+        }
+
+        .day-picker-actions .selected-count {
+            color: #8a9aa8;
+            font-size: 0.9rem;
+            text-align: center;
+            padding: 8px;
+            background: #1e2832;
+            border-radius: 8px;
+        }
+
+        .day-picker-actions .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .day-picker-actions .date-action-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .day-picker-actions .confirm-btn {
+            background: linear-gradient(135deg, #5a8a7a 0%, #4a7a6a 100%);
+            color: #e8f0ed;
+            box-shadow: 0 2px 8px rgba(90, 138, 122, 0.3);
+        }
+
+        .day-picker-actions .cancel-btn {
+            background: linear-gradient(135deg, #8a6a7a 0%, #7a5a6a 100%);
+            color: #f0e8ed;
+            box-shadow: 0 2px 8px rgba(138, 106, 122, 0.3);
+        }
+
+        .day-picker-actions .confirm-btn:active,
+        .day-picker-actions .cancel-btn:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部标题栏 -->
+    <div class="header">
+        <h1>💄 美妆工资记录</h1>
+        <div class="subtitle">专业美妆师收入管理工具</div>
+    </div>
+
+    <!-- 首页 - 统计和快速记录 -->
+    <div class="page active" id="homePage">
+        <!-- 统计卡片 -->
+        <div class="card">
+            <div class="card-title">📊 本月统计</div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalSales">¥0</div>
+                    <div class="stat-label">总业绩</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalCommission">¥0</div>
+                    <div class="stat-label">总提成</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="font-size: 1.1rem;">
+                        <span style="color: #d4b49a;">🔄</span><span id="transferDays">0</span>
+                        <span style="margin: 0 10px; color: #5a6a7a;">|</span>
+                        <span style="color: #d49a9a;">📅</span><span id="leaveDays">0</span>
+                    </div>
+                    <div class="stat-label">调休 | 请假</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="recordCount">0</div>
+                    <div class="stat-label">记录数</div>
+                </div>
+                <div class="stat-card" style="grid-column: span 2; background: #2a4a3a;">
+                    <div class="stat-value" id="monthlySalary" style="font-size: 1.3rem; color: #9ad4c4;">¥0</div>
+                    <div class="stat-label" style="color: #8ac4b4;">当月工资 (底薪+提成)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 快速记录 -->
+        <div class="card">
+            <div class="card-title">⚡ 快速记录</div>
+            <div class="form-group">
+                <label>记录类型</label>
+                <div class="record-type-selector">
+                    <div class="type-option active" data-type="normal" onclick="selectRecordType('normal')">
+                        <span class="type-icon">💼</span>
+                        <span class="type-text">正常出勤</span>
+                    </div>
+                    <div class="type-option" data-type="transfer" onclick="selectRecordType('transfer')">
+                        <span class="type-icon">🔄</span>
+                        <span class="type-text">调休</span>
+                    </div>
+                    <div class="type-option" data-type="leave" onclick="selectRecordType('leave')">
+                        <span class="type-icon">📅</span>
+                        <span class="type-text">请假</span>
+                    </div>
+                </div>
+            </div>
+            <div id="normalRecordFields">
+                <div class="form-group">
+                    <label for="quickSales">今日业绩 (元)</label>
+                    <input type="number" id="quickSales" class="form-control" placeholder="输入业绩金额" oninput="calculateQuickCommission()">
+                </div>
+                <div class="form-group">
+                    <label for="quickCommission">预计提成 (元)</label>
+                    <input type="text" id="quickCommission" class="form-control" readonly placeholder="0.00">
+                </div>
+            </div>
+            <div id="leaveRecordFields" style="display: none;">
+                <div class="form-group">
+                    <label for="leaveNote">请假说明</label>
+                    <input type="text" id="leaveNote" class="form-control" placeholder="可选填写请假原因">
+                </div>
+                <div style="padding: 10px; background: #2a2a3a; border-radius: 8px; margin-bottom: 10px;">
+                    <small style="color: #a87a7a;">⚠️ 请假将扣除当日底薪，不计提成</small>
+                </div>
+            </div>
+            <div id="transferRecordFields" style="display: none;">
+                <div class="form-group">
+                    <label for="transferNote">调休说明</label>
+                    <input type="text" id="transferNote" class="form-control" placeholder="可选填写调休说明">
+                </div>
+                <div style="padding: 10px; background: #2a3a2a; border-radius: 8px; margin-bottom: 10px;">
+                    <small style="color: #7aa89a;">✓ 调休不扣工资，正常计算底薪</small>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>📷 上传凭证图片</label>
+                <div class="upload-area" id="uploadArea" onclick="document.getElementById('imageInput').click()">
+                    <input type="file" id="imageInput" accept="image/*" multiple style="display: none;" onchange="handleImageUpload(event)">
+                    <div class="upload-icon">📤</div>
+                    <div class="upload-text">点击或拖拽图片到此处上传</div>
+                    <div class="upload-hint">支持 JPG、PNG、GIF，单张不超过 10MB</div>
+                </div>
+                <div id="uploadPreview" class="upload-preview"></div>
+            </div>
+            <button class="btn" onclick="quickSaveRecord()">✅ 立即记录</button>
+            <div id="recordTypeWarning"></div>
+        </div>
+
+        <!-- 最新记录 -->
+        <div class="card">
+            <div class="card-title">🆕 最新记录</div>
+            <div id="latestRecords">
+                <div class="empty-state">
+                    <div>📭</div>
+                    <p>暂无记录</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 设置页面 -->
+    <div class="page" id="settingsPage">
+        <!-- 底薪设置 -->
+        <div class="card">
+            <div class="card-title">💰 底薪设置</div>
+            <div class="form-group">
+                <label for="baseSalary">每月底薪 (元)</label>
+                <input type="number" id="baseSalary" class="form-control" placeholder="请输入底薪" value="3000">
+            </div>
+            <button class="btn" onclick="saveBaseSalary()">💾 保存底薪</button>
+        </div>
+
+        <!-- 阶梯提成设置 -->
+        <div class="card">
+            <div class="card-title">📈 阶梯提成规则</div>
+            <div class="tier-list" id="tierList">
+            </div>
+            <button class="btn btn-secondary" onclick="showAddTierModal()">➕ 添加阶梯</button>
+        </div>
+
+        <!-- 快捷设置 -->
+        <div class="card">
+            <div class="card-title">⚡ 快捷设置</div>
+            <button class="btn btn-outline" onclick="setDefaultTiers()">🔄 恢复默认设置</button>
+            <button class="btn btn-secondary" style="margin-top: 10px;" onclick="clearAllData()">🗑️ 清空所有数据</button>
+        </div>
+    </div>
+
+    <!-- 记录页面 -->
+    <div class="page" id="recordsPage">
+        <!-- 筛选和搜索 -->
+        <div class="card">
+            <div class="card-title">🔍 筛选记录</div>
+            <div class="form-group">
+                <label>筛选方式</label>
+                <div class="filter-tabs">
+                    <div class="filter-tab active" data-filter="month" onclick="switchFilterMode('month')">按月筛选</div>
+                    <div class="filter-tab" data-filter="day" onclick="switchFilterMode('day')">按日查询</div>
+                </div>
+            </div>
+            <div id="monthFilterSection">
+                <div class="form-group">
+                    <label for="dateFilter">选择月份</label>
+                    <button class="date-button" id="dateFilterBtn" onclick="showDatePicker('filter')">
+                        请选择月份
+                    </button>
+                </div>
+            </div>
+            <div id="dayFilterSection" style="display: none;">
+                <div class="form-group">
+                    <label for="dayFilter">选择日期（可多选）</label>
+                    <button class="date-button" id="dayFilterBtn" onclick="showDayPicker()">
+                        请选择日期
+                    </button>
+                </div>
+                <div id="selectedDatesTags" class="selected-dates-tags"></div>
+            </div>
+        </div>
+
+        <!-- 日查询结果 -->
+        <div class="card" id="dayQueryResult" style="display: none;">
+            <div class="card-title">📊 日查询结果</div>
+            <div id="dayQueryContent">
+                <div class="empty-state">
+                    <div>📭</div>
+                    <p>该日期暂无记录</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 记录列表 -->
+        <div class="card" id="recordsListCard">
+            <div class="card-title">📁 所有记录</div>
+            <div id="recordsList">
+                <div class="empty-state">
+                    <div>📭</div>
+                    <p>暂无记录，开始记录您的第一笔业绩吧！</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 统计页面 -->
+    <div class="page" id="statsPage">
+        <!-- 月度统计 -->
+        <div class="card">
+            <div class="card-title">📅 月度统计</div>
+            <div class="form-group">
+                <label for="statsMonth">选择月份</label>
+                <button class="date-button" id="statsMonthBtn" onclick="showDatePicker('stats')">
+                    请选择月份
+                </button>
+            </div>
+            <div class="stats-grid" id="monthStats">
+                <div class="stat-card">
+                    <div class="stat-value">¥0</div>
+                    <div class="stat-label">总业绩</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">¥0</div>
+                    <div class="stat-label">总提成</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">记录数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">¥0</div>
+                    <div class="stat-label">日均提成</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">¥0</div>
+                    <div class="stat-label">日均业绩</div>
+                </div>
+                <div class="stat-card" style="grid-column: span 2; background: #2a4a3a;">
+                    <div class="stat-value" style="font-size: 1.3rem; color: #9ad4c4;">¥0</div>
+                    <div class="stat-label" style="color: #8ac4b4;">当月工资 (底薪+提成)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 年度统计 -->
+        <div class="card">
+            <div class="card-title">📆 年度统计</div>
+            <div class="form-group">
+                <label for="statsYear">选择年份</label>
+                <select id="statsYear" class="form-control" onchange="updateYearStats()">
+                    <option value="2026">2026</option>
+                    <option value="2025">2025</option>
+                    <option value="2024">2024</option>
+                </select>
+            </div>
+            <div class="stats-grid" id="yearStats">
+                <div class="stat-card">
+                    <div class="stat-value">¥0</div>
+                    <div class="stat-label">年度业绩</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">¥0</div>
+                    <div class="stat-label">年度提成</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">总记录数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">0</div>
+                    <div class="stat-label">有记录月份</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">¥0</div>
+                    <div class="stat-label">月均提成</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">¥0</div>
+                    <div class="stat-label">月均工资</div>
+                </div>
+                <div class="stat-card" style="grid-column: span 2; background: #2a4a3a;">
+                    <div class="stat-value" style="font-size: 1.3rem; color: #9ad4c4;">¥0</div>
+                    <div class="stat-label" style="color: #8ac4b4;">年度工资 (实际月份底薪+提成)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <div class="bottom-nav">
+        <div class="nav-item active" data-page="homePage" onclick="switchPage('homePage')">
+            <div>🏠</div>
+            <span>首页</span>
+        </div>
+        <div class="nav-item" data-page="settingsPage" onclick="switchPage('settingsPage')">
+            <div>⚙️</div>
+            <span>设置</span>
+        </div>
+        <div class="nav-item" data-page="recordsPage" onclick="switchPage('recordsPage')">
+            <div>📁</div>
+            <span>记录</span>
+        </div>
+        <div class="nav-item" data-page="statsPage" onclick="switchPage('statsPage')">
+            <div>📊</div>
+            <span>统计</span>
+        </div>
+    </div>
+
+    <!-- 模态框 - 添加阶梯 -->
+    <div class="modal" id="addTierModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">➕ 添加阶梯提成</div>
+                <button class="modal-close" onclick="closeAddTierModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="tierMin">最低金额 (元)</label>
+                    <input type="number" id="tierMin" class="form-control" placeholder="例如：0" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="tierMax">最高金额 (元)</label>
+                    <input type="number" id="tierMax" class="form-control" placeholder="例如：10000" value="10000">
+                    <small style="color: #a0aec0; font-size: 0.8rem;">输入 0 表示无上限</small>
+                </div>
+                <div class="form-group">
+                    <label for="tierRate">提成比例 (%)</label>
+                    <input type="number" id="tierRate" class="form-control" placeholder="例如：5" step="0.1" value="5">
+                </div>
+                <button class="btn" onclick="saveTier()">💾 保存阶梯</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 - 编辑阶梯 -->
+    <div class="modal" id="editTierModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">✏️ 编辑阶梯</div>
+                <button class="modal-close" onclick="closeEditTierModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editTierIndex">
+                <div class="form-group">
+                    <label for="editTierMin">最低金额 (元)</label>
+                    <input type="number" id="editTierMin" class="form-control" placeholder="例如：0">
+                </div>
+                <div class="form-group">
+                    <label for="editTierMax">最高金额 (元)</label>
+                    <input type="number" id="editTierMax" class="form-control" placeholder="例如：10000">
+                </div>
+                <div class="form-group">
+                    <label for="editTierRate">提成比例 (%)</label>
+                    <input type="number" id="editTierRate" class="form-control" placeholder="例如：5" step="0.1">
+                </div>
+                <button class="btn" onclick="updateTier()">💾 更新阶梯</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 - 记录详情 -->
+    <div class="modal" id="recordDetailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">📋 记录详情</div>
+                <button class="modal-close" onclick="closeRecordDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="recordDetailContent">
+                <!-- 详情内容将通过JS生成 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 - 图片预览 -->
+    <div class="modal" id="imagePreviewModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">📷 凭证图片</div>
+                <button class="modal-close" onclick="closeImagePreviewModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <img src="" alt="凭证图片" class="image-preview" id="previewImage">
+                <div style="text-align: center; margin-top: 15px;">
+                    <button class="btn" style="width: auto; padding: 10px 20px;" onclick="downloadPreviewImage()">📥 下载图片</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 图库模态框 -->
+    <div class="gallery-modal" id="galleryModal">
+        <div class="gallery-content">
+            <div class="gallery-header">
+                <div class="gallery-counter" id="galleryCounter">1 / 1</div>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <button class="gallery-download" onclick="downloadGalleryImage()" title="下载图片">
+                        <span>📥</span>
+                        <span style="font-weight: 500;">下载</span>
+                    </button>
+                    <button class="gallery-close" onclick="closeGallery()" title="关闭">✕</button>
+                </div>
+            </div>
+            <div class="gallery-main">
+                <button class="gallery-nav prev" id="galleryPrev" onclick="prevGalleryImage()">&#8249;</button>
+                <div class="gallery-image-container">
+                    <img class="gallery-image" id="galleryImage" src="" alt="图片">
+                </div>
+                <button class="gallery-nav next" id="galleryNext" onclick="nextGalleryImage()">&#8250;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 自定义日期选择器模态框 -->
+    <div class="date-picker-modal" id="datePickerModal">
+        <div class="date-picker-content">
+            <div class="date-picker-header">
+                <div class="date-picker-title" id="datePickerTitle">📅 选择日期</div>
+                <button class="modal-close" onclick="closeDatePicker()">&times;</button>
+            </div>
+            <div id="calendarView">
+                <div class="date-controls">
+                    <button class="nav-btn" onclick="prevMonthDayPicker()">&#8249;</button>
+                    <div class="month-year" id="currentMonthYear">2026年4月</div>
+                    <button class="nav-btn" onclick="nextMonthDayPicker()">&#8250;</button>
+                </div>
+                <div class="days-header">
+                    <div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
+                </div>
+                <div class="calendar-grid" id="calendarGrid">
+                </div>
+                <div class="day-picker-actions">
+                    <div class="selected-count">已选择 0 个日期</div>
+                    <div class="action-buttons">
+                        <button class="date-action-btn cancel-btn" onclick="clearSelectedDates()">清空</button>
+                        <button class="date-action-btn confirm-btn" onclick="confirmDaySelection()">确定查询</button>
+                    </div>
+                </div>
+                <div class="date-picker-actions" style="display: none;" id="singleDateActions">
+                    <button class="date-action-btn cancel-btn" onclick="closeDatePicker()">取消</button>
+                    <button class="date-action-btn confirm-btn" onclick="confirmDateSelection()">确定</button>
+                </div>
+            </div>
+            <div id="monthPickerView" style="display: none;">
+                <div class="date-controls">
+                    <button class="nav-btn" onclick="prevYear()">&#8249;</button>
+                    <div class="month-year" id="currentYear">2026年</div>
+                    <button class="nav-btn" onclick="nextYear()">&#8250;</button>
+                </div>
+                <div class="month-grid" id="monthGrid">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 自定义弹窗 -->
+    <div class="custom-dialog-overlay" id="customDialogOverlay">
+        <div class="custom-dialog">
+            <div class="custom-dialog-header">
+                <div class="custom-dialog-title" id="dialogTitle">提示</div>
+            </div>
+            <div class="custom-dialog-body">
+                <div class="custom-dialog-message" id="dialogMessage"></div>
+            </div>
+            <div class="custom-dialog-footer" id="dialogFooter">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 自定义弹窗函数
+        function showDialog(options) {
+            return new Promise((resolve) => {
+                const overlay = document.getElementById('customDialogOverlay');
+                const title = document.getElementById('dialogTitle');
+                const message = document.getElementById('dialogMessage');
+                const footer = document.getElementById('dialogFooter');
+                
+                title.textContent = options.title || '提示';
+                message.textContent = options.message || '';
+                
+                footer.innerHTML = '';
+                
+                if (options.type === 'confirm') {
+                    const cancelBtn = document.createElement('button');
+                    cancelBtn.className = 'custom-dialog-btn';
+                    cancelBtn.textContent = options.cancelText || '取消';
+                    cancelBtn.onclick = () => {
+                        overlay.classList.remove('show');
+                        resolve(false);
+                    };
+                    
+                    const confirmBtn = document.createElement('button');
+                    confirmBtn.className = 'custom-dialog-btn primary';
+                    confirmBtn.textContent = options.confirmText || '确定';
+                    confirmBtn.onclick = () => {
+                        overlay.classList.remove('show');
+                        resolve(true);
+                    };
+                    
+                    footer.appendChild(cancelBtn);
+                    footer.appendChild(confirmBtn);
+                } else if (options.type === 'danger') {
+                    const cancelBtn = document.createElement('button');
+                    cancelBtn.className = 'custom-dialog-btn';
+                    cancelBtn.textContent = options.cancelText || '取消';
+                    cancelBtn.onclick = () => {
+                        overlay.classList.remove('show');
+                        resolve(false);
+                    };
+                    
+                    const confirmBtn = document.createElement('button');
+                    confirmBtn.className = 'custom-dialog-btn danger';
+                    confirmBtn.textContent = options.confirmText || '确定';
+                    confirmBtn.onclick = () => {
+                        overlay.classList.remove('show');
+                        resolve(true);
+                    };
+                    
+                    footer.appendChild(cancelBtn);
+                    footer.appendChild(confirmBtn);
+                } else {
+                    const confirmBtn = document.createElement('button');
+                    confirmBtn.className = 'custom-dialog-btn primary';
+                    confirmBtn.textContent = '确定';
+                    confirmBtn.onclick = () => {
+                        overlay.classList.remove('show');
+                        resolve(true);
+                    };
+                    
+                    footer.appendChild(confirmBtn);
+                }
+                
+                overlay.classList.add('show');
+            });
+        }
+
+        function showAlert(message, title) {
+            return showDialog({
+                type: 'alert',
+                title: title || '提示',
+                message: message
+            });
+        }
+
+        function showConfirm(message, title, confirmText, cancelText) {
+            return showDialog({
+                type: 'confirm',
+                title: title || '确认',
+                message: message,
+                confirmText: confirmText,
+                cancelText: cancelText
+            });
+        }
+
+        function showDangerConfirm(message, title, confirmText, cancelText) {
+            return showDialog({
+                type: 'danger',
+                title: title || '警告',
+                message: message,
+                confirmText: confirmText,
+                cancelText: cancelText
+            });
+        }
+
+        // 数据存储
+        let settings = {
+            baseSalary: 3000,
+            leaveDays: 0,
+            tiers: [
+                { min: 0, max: 10000, rate: 5 },
+                { min: 10000, max: 20000, rate: 8 },
+                { min: 20000, max: 0, rate: 10 }
+            ]
+        };
+
+        let records = [];
+        let currentDatePickerType = '';
+        let currentDate = new Date();
+        let selectedDate = null;
+
+        // 获取当月自然天数（不排除周末和节假日）
+        function getWorkingDaysInMonth(year, month) {
+            return new Date(year, month, 0).getDate();
+        }
+
+        // 计算当月请假记录天数
+        function getLeaveRecordDays(year, month) {
+            const targetMonth = `${year}-${String(month).padStart(2, '0')}`;
+            const leaveRecords = records.filter(r => {
+                return r.date && r.date.startsWith(targetMonth) && r.type === 'leave';
+            });
+            return new Set(leaveRecords.map(r => r.date)).size;
+        }
+
+        // 计算当月调休记录天数
+        function getTransferRecordDays(year, month) {
+            const targetMonth = `${year}-${String(month).padStart(2, '0')}`;
+            const transferRecords = records.filter(r => {
+                return r.date && r.date.startsWith(targetMonth) && r.type === 'transfer';
+            });
+            return new Set(transferRecords.map(r => r.date)).size;
+        }
+
+        // 计算当月正常出勤天数
+        function getNormalRecordDays(year, month) {
+            const targetMonth = `${year}-${String(month).padStart(2, '0')}`;
+            const normalRecords = records.filter(r => {
+                return r.date && r.date.startsWith(targetMonth) && (r.type === 'normal' || !r.type);
+            });
+            return new Set(normalRecords.map(r => r.date)).size;
+        }
+
+        // 计算当月应发底薪（根据记录类型计算）
+        function calculateBaseSalary(year, month) {
+            const totalDays = getWorkingDaysInMonth(year, month);
+            const leaveRecordDays = getLeaveRecordDays(year, month);
+            const transferRecordDays = getTransferRecordDays(year, month);
+            const normalRecordDays = getNormalRecordDays(year, month);
+            
+            if (totalDays === 0) return settings.baseSalary;
+            
+            const dailySalary = settings.baseSalary / totalDays;
+            
+            // 请假天数不发放底薪，调休和正常出勤正常发放
+            const paidDays = normalRecordDays + transferRecordDays;
+            
+            // 计算有记录的总天数
+            const recordedDays = normalRecordDays + transferRecordDays + leaveRecordDays;
+            
+            // 无记录的天数，根据设置中的请假天数处理
+            const unrecordedDays = totalDays - recordedDays;
+            const settingsLeaveDays = settings.leaveDays || 0;
+            
+            // 无记录天数中，扣除设置中的请假天数
+            const unpaidUnrecordedDays = Math.min(settingsLeaveDays, unrecordedDays);
+            const paidUnrecordedDays = unrecordedDays - unpaidUnrecordedDays;
+            
+            // 总发放底薪 = 有记录的正常/调休天数 + 无记录但未请假的天数
+            const totalPaidDays = paidDays + paidUnrecordedDays;
+            
+            return dailySalary * totalPaidDays;
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSettings();
+            loadRecords();
+            updateTierList();
+            updateStatistics();
+            updateLatestRecords();
+            updateRecordsList();
+            setDefaultYear();
+            updateRecordTypeSelector();
+            initDragDrop();
+            initGalleryTouch();
+            
+            // 禁用右键菜单
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+            });
+            
+            // 禁用复制、剪切、粘贴快捷键
+            document.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'x' || e.key === 'v')) {
+                    const activeElement = document.activeElement;
+                    if (!activeElement || (activeElement.tagName !== 'INPUT' && activeElement.tagName !== 'TEXTAREA')) {
+                        e.preventDefault();
+                    }
+                }
+            });
+            
+            // 键盘导航支持
+            document.addEventListener('keydown', function(e) {
+                const galleryModal = document.getElementById('galleryModal');
+                if (!galleryModal.classList.contains('active')) return;
+                
+                if (e.key === 'ArrowLeft') {
+                    prevGalleryImage();
+                } else if (e.key === 'ArrowRight') {
+                    nextGalleryImage();
+                } else if (e.key === 'Escape') {
+                    closeGallery();
+                }
+            });
+        });
+
+        // 切换页面
+        function switchPage(pageId) {
+            // 隐藏所有页面
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // 显示目标页面
+            document.getElementById(pageId).classList.add('active');
+            
+            // 更新导航栏
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            event.currentTarget.classList.add('active');
+            
+            // 页面特定的更新
+            if (pageId === 'recordsPage') {
+                updateRecordsList();
+            } else if (pageId === 'statsPage') {
+                updateMonthStats();
+                updateYearStats();
+            }
+        }
+
+        // 计算快速提成
+        function calculateQuickCommission() {
+            const sales = parseFloat(document.getElementById('quickSales').value) || 0;
+            const commission = calculateCommissionFromSales(sales);
+            document.getElementById('quickCommission').value = commission.toFixed(2);
+        }
+
+        // 计算提成
+        function calculateCommissionFromSales(sales) {
+            let commission = 0;
+            
+            for (let tier of settings.tiers) {
+                const tierMax = tier.max === 0 ? Infinity : tier.max;
+                
+                if (sales > tier.min) {
+                    const tierSales = Math.min(sales, tierMax) - tier.min;
+                    if (tierSales > 0) {
+                        commission += tierSales * (tier.rate / 100);
+                    }
+                }
+            }
+            
+            return commission;
+        }
+
+        let currentRecordType = 'normal';
+
+        // 检查当天是否已存在调休或请假记录
+        function checkTodayRecordType() {
+            const now = new Date();
+            const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            
+            if (!records || !Array.isArray(records)) {
+                return {
+                    hasRecord: false,
+                    hasLeave: false,
+                    hasTransfer: false,
+                    hasNormal: false,
+                    leaveRecord: null,
+                    transferRecord: null,
+                    normalRecords: [],
+                    type: null
+                };
+            }
+            
+            const todayRecords = records.filter(r => r.date === date);
+            const leaveRecord = todayRecords.find(r => r.type === 'leave');
+            const transferRecord = todayRecords.find(r => r.type === 'transfer');
+            const normalRecords = todayRecords.filter(r => r.type === 'normal');
+            
+            return {
+                hasRecord: !!(leaveRecord || transferRecord || normalRecords.length > 0),
+                hasLeave: !!leaveRecord,
+                hasTransfer: !!transferRecord,
+                hasNormal: normalRecords.length > 0,
+                leaveRecord: leaveRecord,
+                transferRecord: transferRecord,
+                normalRecords: normalRecords,
+                type: leaveRecord ? 'leave' : (transferRecord ? 'transfer' : (normalRecords.length > 0 ? 'normal' : null))
+            };
+        }
+
+        // 更新记录类型选择器的禁用状态
+        function updateRecordTypeSelector() {
+            const todayRecord = checkTodayRecordType();
+            const typeOptions = document.querySelectorAll('.type-option');
+            let warningHTML = '';
+            
+            if (!todayRecord || !todayRecord.hasRecord) {
+                typeOptions.forEach(opt => {
+                    opt.classList.remove('disabled');
+                    opt.style.opacity = opt.classList.contains('active') ? '1' : '0.5';
+                    opt.style.pointerEvents = 'auto';
+                });
+                const warningDiv = document.getElementById('recordTypeWarning');
+                if (warningDiv) warningDiv.innerHTML = '';
+                return;
+            }
+            
+            typeOptions.forEach(opt => {
+                opt.classList.add('disabled');
+                opt.style.opacity = '0.3';
+                opt.style.pointerEvents = 'none';
+            });
+            
+            const existingTypes = [];
+            if (todayRecord.hasNormal) existingTypes.push('正常出勤');
+            if (todayRecord.hasTransfer) existingTypes.push('调休');
+            if (todayRecord.hasLeave) existingTypes.push('请假');
+            
+            warningHTML = `
+                <div style="background: #3a2a2a; border: 1px solid #5a3a3a; border-radius: 8px; padding: 10px; margin-top: 10px;">
+                    <span style="color: #a87a7a; font-size: 0.85rem;">⚠️ 今日已创建${existingTypes.join('、')}记录，请删除后重新创建</span>
+                </div>
+            `;
+            
+            const warningDiv = document.getElementById('recordTypeWarning');
+            warningDiv.innerHTML = warningHTML;
+        }
+
+        // 选择记录类型
+        function selectRecordType(type) {
+            const todayRecord = checkTodayRecordType();
+            
+            if (todayRecord) {
+                if ((type === 'leave' && todayRecord.hasLeave) || 
+                    (type === 'transfer' && todayRecord.hasTransfer) ||
+                    (type === 'normal' && todayRecord.hasNormal)) {
+                } else if ((type === 'leave' && todayRecord.hasTransfer) || 
+                           (type === 'transfer' && todayRecord.hasLeave)) {
+                } else {
+                    currentRecordType = type;
+                }
+            } else {
+                currentRecordType = type;
+            }
+            
+            document.querySelectorAll('.type-option').forEach(opt => {
+                opt.classList.remove('active');
+            });
+            
+            const typeOption = document.querySelector(`.type-option[data-type="${type}"]`);
+            if (typeOption) {
+                typeOption.classList.add('active');
+            }
+            
+            const normalFields = document.getElementById('normalRecordFields');
+            const leaveFields = document.getElementById('leaveRecordFields');
+            const transferFields = document.getElementById('transferRecordFields');
+            
+            if (normalFields) normalFields.style.display = type === 'normal' ? 'block' : 'none';
+            if (leaveFields) leaveFields.style.display = type === 'leave' ? 'block' : 'none';
+            if (transferFields) transferFields.style.display = type === 'transfer' ? 'block' : 'none';
+        }
+
+        // 快速保存记录
+        async function quickSaveRecord() {
+            const now = new Date();
+            const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            
+            const todayRecord = checkTodayRecordType();
+            
+            if (todayRecord && todayRecord.hasRecord) {
+                const existingTypes = [];
+                if (todayRecord.hasNormal) existingTypes.push('正常出勤');
+                if (todayRecord.hasTransfer) existingTypes.push('调休');
+                if (todayRecord.hasLeave) existingTypes.push('请假');
+                await showAlert(`今日已创建${existingTypes.join('、')}记录，请删除后重新创建`);
+                return;
+            }
+            
+            let record = {
+                id: Date.now(),
+                date: date,
+                type: currentRecordType,
+                sales: 0,
+                commission: 0,
+                note: '',
+                images: [...tempUploadedImages],
+                timestamp: now.toISOString()
+            };
+            
+            if (currentRecordType === 'normal') {
+                const sales = parseFloat(document.getElementById('quickSales').value);
+                
+                if (isNaN(sales) || sales <= 0) {
+                    await showAlert('请输入有效的业绩金额');
+                    return;
+                }
+                
+                record.sales = sales;
+                record.commission = calculateCommissionFromSales(sales);
+            } else if (currentRecordType === 'leave') {
+                record.note = document.getElementById('leaveNote').value || '请假';
+            } else if (currentRecordType === 'transfer') {
+                record.note = document.getElementById('transferNote').value || '调休';
+            }
+            
+            records.push(record);
+            saveRecords();
+            
+            const typeText = currentRecordType === 'normal' ? '业绩' : (currentRecordType === 'leave' ? '请假' : '调休');
+            await showAlert(`✅ ${typeText}记录已保存`);
+            
+            // 清空表单
+            document.getElementById('quickSales').value = '';
+            document.getElementById('quickCommission').value = '0.00';
+            document.getElementById('leaveNote').value = '';
+            document.getElementById('transferNote').value = '';
+            tempUploadedImages = [];
+            updateUploadPreview();
+            
+            // 更新记录类型选择器状态
+            updateRecordTypeSelector();
+            
+            // 更新统计
+            updateStatistics();
+            updateLatestRecords();
+            updateRecordsList();
+        }
+
+        // 保存底薪
+        async function saveBaseSalary() {
+            const baseSalary = parseFloat(document.getElementById('baseSalary').value);
+            
+            if (isNaN(baseSalary) || baseSalary < 0) {
+                await showAlert('请输入有效的底薪金额');
+                return;
+            }
+            
+            settings.baseSalary = baseSalary;
+            saveSettings();
+            
+            await showAlert('✅ 底薪设置已保存');
+            updateWorkDaysInfo();
+        }
+
+        // 保存请假天数
+        // 显示添加阶梯模态框
+        function showAddTierModal() {
+            // 设置默认值
+            const lastTier = settings.tiers[settings.tiers.length - 1];
+            if (lastTier) {
+                document.getElementById('tierMin').value = lastTier.max === 0 ? 20000 : lastTier.max;
+            }
+            
+            document.getElementById('addTierModal').classList.add('show');
+        }
+
+        // 关闭添加阶梯模态框
+        function closeAddTierModal() {
+            document.getElementById('addTierModal').classList.remove('show');
+        }
+
+        // 保存阶梯
+        async function saveTier() {
+            const min = parseFloat(document.getElementById('tierMin').value);
+            const max = parseFloat(document.getElementById('tierMax').value);
+            const rate = parseFloat(document.getElementById('tierRate').value);
+            
+            if (isNaN(min) || isNaN(rate) || min < 0 || rate < 0) {
+                await showAlert('请输入有效的阶梯参数');
+                return;
+            }
+            
+            // 如果最大值为0，表示无上限
+            const actualMax = max === 0 ? 0 : max;
+            
+            // 检查是否与现有阶梯重叠
+            for (let tier of settings.tiers) {
+                if ((min >= tier.min && min < (tier.max === 0 ? Infinity : tier.max)) ||
+                    (actualMax !== 0 && actualMax > tier.min && actualMax <= (tier.max === 0 ? Infinity : tier.max))) {
+                    await showAlert('阶梯范围与现有阶梯重叠，请调整');
+                    return;
+                }
+            }
+            
+            settings.tiers.push({ min, max: actualMax, rate });
+            settings.tiers.sort((a, b) => a.min - b.min);
+            saveSettings();
+            
+            updateTierList();
+            closeAddTierModal();
+            
+            await showAlert('✅ 阶梯提成已添加');
+        }
+
+        // 更新阶梯列表
+        function updateTierList() {
+            const tierList = document.getElementById('tierList');
+            tierList.innerHTML = '';
+            
+            if (settings.tiers.length === 0) {
+                tierList.innerHTML = '<div style="text-align: center; padding: 20px; color: #a0aec0;">暂无阶梯设置</div>';
+                return;
+            }
+            
+            settings.tiers.forEach((tier, index) => {
+                const tierMaxDisplay = tier.max === 0 ? '∞' : `¥${tier.max.toLocaleString()}`;
+                const tierItem = document.createElement('div');
+                tierItem.className = 'tier-item';
+                tierItem.innerHTML = `
+                    <div class="tier-info">
+                        <div class="tier-header">阶梯 ${index + 1}</div>
+                        <div class="tier-range">¥${tier.min.toLocaleString()} - ${tierMaxDisplay} | ${tier.rate}%</div>
+                    </div>
+                    <div class="tier-actions">
+                        <button class="btn tier-btn btn-outline" onclick="editTier(${index})">✏️</button>
+                        <button class="btn tier-btn btn-secondary" onclick="deleteTier(${index})">🗑️</button>
+                    </div>
+                `;
+                tierList.appendChild(tierItem);
+            });
+        }
+
+        // 编辑阶梯
+        function editTier(index) {
+            const tier = settings.tiers[index];
+            document.getElementById('editTierIndex').value = index;
+            document.getElementById('editTierMin').value = tier.min;
+            document.getElementById('editTierMax').value = tier.max === 0 ? 0 : tier.max;
+            document.getElementById('editTierRate').value = tier.rate;
+            
+            document.getElementById('editTierModal').classList.add('show');
+        }
+
+        // 关闭编辑阶梯模态框
+        function closeEditTierModal() {
+            document.getElementById('editTierModal').classList.remove('show');
+        }
+
+        // 更新阶梯
+        async function updateTier() {
+            const index = parseInt(document.getElementById('editTierIndex').value);
+            const min = parseFloat(document.getElementById('editTierMin').value);
+            const max = parseFloat(document.getElementById('editTierMax').value);
+            const rate = parseFloat(document.getElementById('editTierRate').value);
+            
+            if (isNaN(min) || isNaN(rate) || min < 0 || rate < 0) {
+                await showAlert('请输入有效的阶梯参数');
+                return;
+            }
+            
+            const actualMax = max === 0 ? 0 : max;
+            
+            // 检查是否与现有阶梯重叠（排除自己）
+            for (let i = 0; i < settings.tiers.length; i++) {
+                if (i === index) continue;
+                
+                const tier = settings.tiers[i];
+                if ((min >= tier.min && min < (tier.max === 0 ? Infinity : tier.max)) ||
+                    (actualMax !== 0 && actualMax > tier.min && actualMax <= (tier.max === 0 ? Infinity : tier.max))) {
+                    await showAlert('阶梯范围与现有阶梯重叠，请调整');
+                    return;
+                }
+            }
+            
+            settings.tiers[index] = { min, max: actualMax, rate };
+            settings.tiers.sort((a, b) => a.min - b.min);
+            saveSettings();
+            
+            updateTierList();
+            closeEditTierModal();
+            
+            await showAlert('✅ 阶梯提成已更新');
+        }
+
+        // 删除阶梯
+        async function deleteTier(index) {
+            if (settings.tiers.length <= 1) {
+                await showAlert('至少需要保留一个阶梯');
+                return;
+            }
+            
+            if (await showConfirm('确定要删除这个阶梯吗？', '确认删除')) {
+                settings.tiers.splice(index, 1);
+                saveSettings();
+                updateTierList();
+                await showAlert('✅ 阶梯已删除');
+            }
+        }
+
+        // 恢复默认设置
+        async function setDefaultTiers() {
+            if (await showConfirm('确定要恢复默认阶梯设置吗？这将覆盖当前设置。', '恢复默认')) {
+                settings.tiers = [
+                    { min: 0, max: 10000, rate: 5 },
+                    { min: 10000, max: 20000, rate: 8 },
+                    { min: 20000, max: 0, rate: 10 }
+                ];
+                saveSettings();
+                updateTierList();
+                await showAlert('✅ 已恢复默认设置');
+            }
+        }
+
+        // 清空所有数据
+        async function clearAllData() {
+            if (await showDangerConfirm('确定要清空所有记录和设置吗？此操作不可恢复！', '警告')) {
+                if (await showDangerConfirm('再次确认：清空所有数据？', '最终确认')) {
+                    settings = {
+                        baseSalary: 3000,
+                        tiers: [
+                            { min: 0, max: 10000, rate: 5 },
+                            { min: 10000, max: 20000, rate: 8 },
+                            { min: 20000, max: 0, rate: 10 }
+                        ]
+                    };
+                    
+                    records = [];
+                    
+                    saveSettings();
+                    saveRecords();
+                    
+                    updateTierList();
+                    updateStatistics();
+                    updateLatestRecords();
+                    updateRecordsList();
+                    
+                    // 重置日期选择器按钮文本
+                    document.getElementById('dateFilterBtn').textContent = '请选择月份';
+                    document.getElementById('statsMonthBtn').textContent = '请选择月份';
+                    
+                    await showAlert('✅ 所有数据已清空');
+                }
+            }
+        }
+
+        // 更新统计信息
+        function updateStatistics() {
+            const now = new Date();
+            const thisMonth = now.getMonth() + 1;
+            const thisYear = now.getFullYear();
+            const targetMonth = `${thisYear}-${String(thisMonth).padStart(2, '0')}`;
+            
+            const monthRecords = records.filter(r => {
+                return r.date && r.date.startsWith(targetMonth);
+            });
+            
+            // 只计算正常出勤记录的业绩和提成
+            const normalRecords = monthRecords.filter(r => r.type === 'normal' || !r.type);
+            const totalSales = normalRecords.reduce((sum, r) => sum + r.sales, 0);
+            const totalCommission = normalRecords.reduce((sum, r) => sum + r.commission, 0);
+            const recordCount = monthRecords.length;
+            
+            // 计算各种类型的天数
+            const normalDays = getNormalRecordDays(thisYear, thisMonth);
+            const transferDays = getTransferRecordDays(thisYear, thisMonth);
+            const leaveDays = getLeaveRecordDays(thisYear, thisMonth);
+            
+            // 当月工资 = 应发底薪 + 提成
+            const baseSalaryAmount = calculateBaseSalary(thisYear, thisMonth);
+            const monthlySalary = baseSalaryAmount + totalCommission;
+            
+            document.getElementById('totalSales').textContent = `¥${totalSales.toLocaleString()}`;
+            document.getElementById('totalCommission').textContent = `¥${totalCommission.toLocaleString()}`;
+            document.getElementById('recordCount').textContent = recordCount;
+            document.getElementById('monthlySalary').textContent = `¥${monthlySalary.toLocaleString()}`;
+            document.getElementById('transferDays').textContent = transferDays;
+            document.getElementById('leaveDays').textContent = leaveDays;
+        }
+
+        // 更新最新记录
+        function updateLatestRecords() {
+            const latestContainer = document.getElementById('latestRecords');
+            
+            if (records.length === 0) {
+                latestContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div>📭</div>
+                        <p>暂无记录</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 获取最新的3条记录
+            const latestRecords = [...records].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp)).slice(0, 3);
+            
+            let html = '';
+            latestRecords.forEach(record => {
+                html += createRecordCard(record, true);
+            });
+            
+            latestContainer.innerHTML = html;
+        }
+
+        // 更新记录列表
+        function updateRecordsList() {
+            const recordsContainer = document.getElementById('recordsList');
+            filterRecords();
+        }
+
+        // 切换筛选模式
+        function switchFilterMode(mode) {
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`.filter-tab[data-filter="${mode}"]`).classList.add('active');
+            
+            document.getElementById('monthFilterSection').style.display = mode === 'month' ? 'block' : 'none';
+            document.getElementById('dayFilterSection').style.display = mode === 'day' ? 'block' : 'none';
+            
+            if (mode === 'month') {
+                document.getElementById('dayQueryResult').style.display = 'none';
+                document.getElementById('recordsListCard').style.display = 'block';
+                filterRecords();
+            } else {
+                if (selectedDates.length > 0) {
+                    filterByDays();
+                } else {
+                    document.getElementById('dayQueryResult').style.display = 'none';
+                    document.getElementById('recordsListCard').style.display = 'block';
+                }
+            }
+        }
+
+        // 筛选记录
+        function filterRecords() {
+            const recordsContainer = document.getElementById('recordsList');
+            const dateFilterBtn = document.getElementById('dateFilterBtn');
+            const dateText = dateFilterBtn.textContent;
+            
+            if (dateText === '请选择月份') {
+                // 显示所有记录
+                if (records.length === 0) {
+                    recordsContainer.innerHTML = `
+                        <div class="empty-state">
+                            <div>📭</div>
+                            <p>暂无记录，开始记录您的第一笔业绩吧！</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '';
+                const sortedRecords = [...records].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                sortedRecords.forEach(record => {
+                    html += createRecordCard(record, false);
+                });
+                
+                recordsContainer.innerHTML = html;
+                return;
+            }
+            
+            // 解析日期文本 "2026年4月"
+            const match = dateText.match(/(\d+)年(\d+)月/);
+            if (!match) {
+                // 显示所有记录
+                let html = '';
+                const sortedRecords = [...records].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                sortedRecords.forEach(record => {
+                    html += createRecordCard(record, false);
+                });
+                recordsContainer.innerHTML = html;
+                return;
+            }
+            
+            const year = parseInt(match[1]);
+            const month = parseInt(match[2]);
+            const targetMonth = `${year}-${String(month).padStart(2, '0')}`;
+            
+            const filteredRecords = records.filter(r => {
+                return r.date && r.date.startsWith(targetMonth);
+            });
+            
+            if (filteredRecords.length === 0) {
+                recordsContainer.innerHTML = `
+                    <div class="empty-state">
+                        <div>📭</div>
+                        <p>该月份暂无记录</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            const sortedRecords = [...filteredRecords].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            sortedRecords.forEach(record => {
+                html += createRecordCard(record, false);
+            });
+            
+            recordsContainer.innerHTML = html;
+        }
+
+        // 创建记录卡片
+        function createRecordCard(record, isLatest) {
+            const recordDate = new Date(record.timestamp);
+            const timeStr = recordDate.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+            const recordType = record.type || 'normal';
+            
+            const now = new Date();
+            const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            const isTodayRecord = record.date === today;
+            
+            let typeBadge = '';
+            let cardStyle = '';
+            let amountDisplay = '';
+            let noteDisplay = record.note || '';
+            
+            if (recordType === 'leave') {
+                typeBadge = '<span class="record-type-badge leave">请假</span>';
+                cardStyle = 'border-left: 3px solid #a87a7a;';
+                amountDisplay = '<div class="record-amount" style="color: #a87a7a;">请假</div>';
+                noteDisplay = noteDisplay || '请假';
+            } else if (recordType === 'transfer') {
+                typeBadge = '<span class="record-type-badge transfer">调休</span>';
+                cardStyle = 'border-left: 3px solid #9aaa7a;';
+                amountDisplay = '<div class="record-amount" style="color: #9aaa7a;">调休</div>';
+                noteDisplay = noteDisplay || '调休';
+            } else {
+                typeBadge = '<span class="record-type-badge normal">正常</span>';
+                amountDisplay = `<div class="record-amount">¥${record.sales.toLocaleString()}</div>`;
+            }
+            
+            let imagesHTML = '';
+            if (record.images && record.images.length > 0) {
+                imagesHTML = '<div class="record-images">';
+                imagesHTML += `<img src="${record.images[0]}" class="record-image" onclick="event.stopPropagation(); openRecordGallery(${record.id}, 0)" alt="封面">`;
+                if (record.images.length > 1) {
+                    imagesHTML += `<div style="width: 45px; height: 45px; background: #3a4a58; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: #a0aec0; border: 1px solid #3a4a58; cursor: pointer; transition: all 0.15s;" onclick="event.stopPropagation(); openRecordGallery(${record.id}, 0)" onmouseover="this.style.transform='scale(1.08)'; this.style.borderColor='#5a8a7a';" onmouseout="this.style.transform='scale(1)'; this.style.borderColor='#3a4a58';">+${record.images.length - 1}</div>`;
+                }
+                imagesHTML += '</div>';
+            }
+            
+            let deleteButtonHTML = '';
+            if (isTodayRecord) {
+                deleteButtonHTML = `
+                    <div style="margin-top: 10px; display: flex; justify-content: flex-end;">
+                        <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.85rem;" onclick="event.stopPropagation(); deleteRecord(${record.id})">🗑️ 删除</button>
+                    </div>
+                `;
+            }
+            
+            return `
+                <div class="record-card" onclick="showRecordDetail(${record.id})" style="${cardStyle}">
+                    <div class="record-header">
+                        <div class="record-date">${record.date} ${typeBadge}</div>
+                        ${recordType === 'normal' ? `<span class="record-badge">¥${record.commission.toFixed(0)}</span>` : ''}
+                    </div>
+                    ${amountDisplay}
+                    ${noteDisplay ? `<div class="record-note">📝 ${noteDisplay.substring(0, 40)}${noteDisplay.length > 40 ? '...' : ''}</div>` : ''}
+                    ${imagesHTML}
+                    ${!isLatest ? `<div class="record-time">${timeStr}</div>` : ''}
+                    ${deleteButtonHTML}
+                </div>
+            `;
+        }
+
+        // 删除记录
+        async function deleteRecord(recordId) {
+            const confirmDelete = await showConfirm('确定要删除这条记录吗？');
+            if (!confirmDelete) return;
+            
+            const index = records.findIndex(r => r.id === recordId);
+            if (index > -1) {
+                records.splice(index, 1);
+                saveRecords();
+                
+                await showAlert('✅ 记录已删除');
+                
+                updateStatistics();
+                updateLatestRecords();
+                updateRecordsList();
+                updateRecordTypeSelector();
+            }
+        }
+
+        // 显示记录详情
+        function showRecordDetail(recordId) {
+            const record = records.find(r => r.id === recordId);
+            if (!record) return;
+            
+            const recordDate = new Date(record.timestamp);
+            const dateStr = recordDate.toLocaleDateString('zh-CN');
+            const timeStr = recordDate.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+            const recordType = record.type || 'normal';
+            
+            let typeText = '正常出勤';
+            let typeColor = '#7aa89a';
+            let typeBg = '#1a3a2a';
+            if (recordType === 'leave') {
+                typeText = '请假';
+                typeColor = '#aa7a7a';
+                typeBg = '#3a1a1a';
+            } else if (recordType === 'transfer') {
+                typeText = '调休';
+                typeColor = '#9aaa7a';
+                typeBg = '#2a3a1a';
+            }
+            
+            let imagesHTML = '';
+            if (record.images && record.images.length > 0) {
+                imagesHTML = '<div style="margin-top: 20px;"><strong>📊 凭证图片:</strong><div class="record-images" style="margin-top: 10px;">';
+                imagesHTML += `<img src="${record.images[0]}" class="record-image" style="width: 100px; height: 100px;" onclick="openRecordGallery(${record.id}, 0)" alt="封面">`;
+                if (record.images.length > 1) {
+                    imagesHTML += `<div style="width: 100px; height: 100px; background: #3a4a58; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #a0aec0; border: 1px solid #3a4a58; cursor: pointer; transition: all 0.15s;" onclick="openRecordGallery(${record.id}, 0)" onmouseover="this.style.transform='scale(1.05)'; this.style.borderColor='#5a8a7a';" onmouseout="this.style.transform='scale(1)'; this.style.borderColor='#3a4a58';">+${record.images.length - 1}</div>`;
+                }
+                imagesHTML += '</div></div>';
+            }
+            
+            let salesHTML = '';
+            let commissionHTML = '';
+            
+            if (recordType === 'normal') {
+                salesHTML = `
+                    <div style="background: #2d3748; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: inset 4px 4px 8px #1a202c, inset -4px -4px 8px #4a5568;">
+                        <div style="font-size: 0.9rem; color: #a0aec0; margin-bottom: 5px;">� 今日业绩</div>
+                        <div style="font-size: 1.8rem; font-weight: 700; color: #e2e8f0;">¥${record.sales.toLocaleString()}</div>
+                    </div>
+                    
+                    <div style="background: #2d3748; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: inset 4px 4px 8px #1a202c, inset -4px -4px 8px #4a5568;">
+                        <div style="font-size: 0.9rem; color: #a0aec0; margin-bottom: 5px;">🎁 业绩提成</div>
+                        <div style="font-size: 1.5rem; font-weight: 700; color: #68d391;">¥${record.commission.toLocaleString()}</div>
+                    </div>
+                `;
+            }
+            
+            const detailHTML = `
+                <div style="padding: 10px;">
+                    <div style="background: #2d3748; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: inset 4px 4px 8px #1a202c, inset -4px -4px 8px #4a5568;">
+                        <div style="font-size: 0.9rem; color: #a0aec0; margin-bottom: 5px;">📅 记录日期</div>
+                        <div style="font-size: 1.1rem; font-weight: 600; color: #81e6d9;">${dateStr} ${timeStr}</div>
+                    </div>
+                    
+                    <div style="background: ${typeBg}; border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid ${typeColor};">
+                        <div style="font-size: 0.9rem; color: #a0aec0; margin-bottom: 5px;">📋 记录类型</div>
+                        <div style="font-size: 1.3rem; font-weight: 600; color: ${typeColor};">${typeText}</div>
+                    </div>
+                    
+                    ${salesHTML}
+                    
+                    ${record.note ? `
+                    <div style="background: #2d3748; border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: inset 4px 4px 8px #1a202c, inset -4px -4px 8px #4a5568;">
+                        <div style="font-size: 0.9rem; color: #a0aec0; margin-bottom: 5px;">📝 备注说明</div>
+                        <div style="font-size: 1rem; line-height: 1.6; color: #e2e8f0;">${record.note}</div>
+                    </div>
+                    ` : ''}
+                    
+                    ${imagesHTML}
+                    
+                    <div style="margin-top: 20px; display: flex; gap: 10px;">
+                        <button class="btn" style="flex: 1; padding: 12px;" onclick="closeRecordDetailModal()">⬅️ 返回</button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('recordDetailContent').innerHTML = detailHTML;
+            document.getElementById('recordDetailModal').classList.add('show');
+        }
+
+        // 关闭记录详情模态框
+        function closeRecordDetailModal() {
+            document.getElementById('recordDetailModal').classList.remove('show');
+        }
+
+        // 预览图片
+        function previewImage(src) {
+            document.getElementById('previewImage').src = src;
+            document.getElementById('imagePreviewModal').classList.add('show');
+        }
+
+        // 关闭图片预览模态框
+        function closeImagePreviewModal() {
+            document.getElementById('imagePreviewModal').classList.remove('show');
+        }
+
+        // 下载预览图片
+        function downloadPreviewImage() {
+            const imgSrc = document.getElementById('previewImage').src;
+            const link = document.createElement('a');
+            link.href = imgSrc;
+            link.download = 'voucher_' + Date.now() + '.jpg';
+            link.click();
+        }
+
+        // 临时存储上传的图片
+        let tempUploadedImages = [];
+        let galleryImages = [];
+        let currentGalleryIndex = 0;
+
+        // 初始化拖拽上传
+        function initDragDrop() {
+            const uploadArea = document.getElementById('uploadArea');
+            if (!uploadArea) return;
+
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                const files = e.dataTransfer.files;
+                processFiles(files);
+            });
+        }
+
+        // 处理图片上传
+        async function handleImageUpload(event) {
+            const files = event.target.files;
+            await processFiles(files);
+            event.target.value = '';
+        }
+
+        // 处理文件
+        async function processFiles(files) {
+            const uploadPreview = document.getElementById('uploadPreview');
+            if (!uploadPreview) return;
+
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                
+                // 验证文件类型
+                if (!file.type.startsWith('image/')) {
+                    await showAlert(`文件 ${file.name} 不是有效的图片格式`);
+                    continue;
+                }
+
+                // 验证文件大小 (10MB)
+                const maxSize = 10 * 1024 * 1024;
+                if (file.size > maxSize) {
+                    await showAlert(`图片 ${file.name} 超过10MB限制`);
+                    continue;
+                }
+
+                // 转换为base64
+                const base64 = await fileToBase64(file);
+                tempUploadedImages.push(base64);
+            }
+
+            updateUploadPreview();
+        }
+
+        // 文件转base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // 更新上传预览
+        function updateUploadPreview() {
+            const uploadPreview = document.getElementById('uploadPreview');
+            if (!uploadPreview) return;
+
+            if (tempUploadedImages.length === 0) {
+                uploadPreview.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            tempUploadedImages.forEach((img, index) => {
+                html += `
+                    <div class="preview-item">
+                        <img src="${img}" alt="预览${index + 1}">
+                        <button class="preview-remove" onclick="removeUploadedImage(${index})">&times;</button>
+                    </div>
+                `;
+            });
+
+            uploadPreview.innerHTML = html;
+        }
+
+        // 移除上传的图片
+        function removeUploadedImage(index) {
+            tempUploadedImages.splice(index, 1);
+            updateUploadPreview();
+        }
+
+        // 通过记录ID打开图库
+        function openRecordGallery(recordId, startIndex = 0) {
+            const record = records.find(r => r.id === recordId);
+            if (!record || !record.images || record.images.length === 0) return;
+            
+            galleryImages = record.images;
+            currentGalleryIndex = startIndex;
+            
+            updateGallery();
+            document.getElementById('galleryModal').classList.add('active');
+        }
+
+        // 打开图库
+        function openGallery(images, startIndex = 0) {
+            if (!images || images.length === 0) return;
+
+            galleryImages = images;
+            currentGalleryIndex = startIndex;
+            
+            updateGallery();
+            document.getElementById('galleryModal').classList.add('active');
+        }
+
+        // 更新图库显示
+        function updateGallery() {
+            const galleryImage = document.getElementById('galleryImage');
+            const galleryCounter = document.getElementById('galleryCounter');
+            const galleryPrev = document.getElementById('galleryPrev');
+            const galleryNext = document.getElementById('galleryNext');
+
+            if (!galleryImage || !galleryCounter) return;
+
+            galleryImage.src = galleryImages[currentGalleryIndex];
+            galleryCounter.textContent = `${currentGalleryIndex + 1} / ${galleryImages.length}`;
+
+            if (galleryPrev) galleryPrev.disabled = currentGalleryIndex === 0;
+            if (galleryNext) galleryNext.disabled = currentGalleryIndex === galleryImages.length - 1;
+        }
+
+        // 上一张图片
+        function prevGalleryImage() {
+            if (currentGalleryIndex > 0) {
+                currentGalleryIndex--;
+                updateGallery();
+            }
+        }
+
+        // 下一张图片
+        function nextGalleryImage() {
+            if (currentGalleryIndex < galleryImages.length - 1) {
+                currentGalleryIndex++;
+                updateGallery();
+            }
+        }
+
+        // 关闭图库
+        function closeGallery() {
+            document.getElementById('galleryModal').classList.remove('active');
+        }
+
+        // 下载图库图片
+        function downloadGalleryImage() {
+            if (galleryImages.length === 0) return;
+            const imgSrc = galleryImages[currentGalleryIndex];
+            const link = document.createElement('a');
+            link.href = imgSrc;
+            link.download = `voucher_${Date.now()}_${currentGalleryIndex + 1}.jpg`;
+            link.click();
+        }
+
+        // 触摸滑动变量
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        // 初始化图库触摸事件
+        function initGalleryTouch() {
+            const galleryModal = document.getElementById('galleryModal');
+            const galleryMain = document.querySelector('.gallery-main');
+            
+            if (!galleryMain) return;
+            
+            galleryMain.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, false);
+            
+            galleryMain.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, false);
+        }
+
+        // 处理滑动
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    nextGalleryImage();
+                } else {
+                    prevGalleryImage();
+                }
+            }
+        }
+
+        // 更新月度统计
+        function updateMonthStats() {
+            const statsMonthBtn = document.getElementById('statsMonthBtn');
+            const dateText = statsMonthBtn.textContent;
+            
+            if (dateText === '请选择月份') {
+                // 默认显示当前月份
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = now.getMonth() + 1;
+                const monthText = `${year}年${month}月`;
+                statsMonthBtn.textContent = monthText;
+                updateMonthStats();
+                return;
+            }
+            
+            // 解析日期文本 "2026年4月"
+            const match = dateText.match(/(\d+)年(\d+)月/);
+            if (!match) return;
+            
+            const year = parseInt(match[1]);
+            const month = parseInt(match[2]);
+            const targetMonth = `${year}-${String(month).padStart(2, '0')}`;
+            
+            const monthRecords = records.filter(r => {
+                return r.date && r.date.startsWith(targetMonth);
+            });
+            
+            // 只计算正常出勤记录的业绩和提成
+            const normalRecords = monthRecords.filter(r => r.type === 'normal' || !r.type);
+            const totalSales = normalRecords.reduce((sum, r) => sum + r.sales, 0);
+            const totalCommission = normalRecords.reduce((sum, r) => sum + r.commission, 0);
+            const recordCount = monthRecords.length;
+            
+            // 计算各种类型的天数
+            const normalDays = getNormalRecordDays(year, month);
+            const transferDays = getTransferRecordDays(year, month);
+            const leaveDays = getLeaveRecordDays(year, month);
+            const workDays = normalDays + transferDays + leaveDays;
+            
+            // 日均提成和日均业绩按正常出勤天数计算
+            const avgCommission = normalDays > 0 ? totalCommission / normalDays : 0;
+            const avgSales = normalDays > 0 ? totalSales / normalDays : 0;
+            
+            // 当月工资 = 应发底薪 + 提成
+            const baseSalaryAmount = calculateBaseSalary(year, month);
+            const monthlySalary = baseSalaryAmount + totalCommission;
+            
+            const statsCards = document.getElementById('monthStats').children;
+            statsCards[0].querySelector('.stat-value').textContent = `¥${totalSales.toLocaleString()}`;
+            statsCards[1].querySelector('.stat-value').textContent = `¥${totalCommission.toLocaleString()}`;
+            statsCards[2].querySelector('.stat-value').textContent = recordCount;
+            statsCards[3].querySelector('.stat-value').textContent = `¥${avgCommission.toFixed(2)}`;
+            statsCards[4].querySelector('.stat-value').textContent = `¥${avgSales.toFixed(2)}`;
+            statsCards[5].querySelector('.stat-value').textContent = `¥${monthlySalary.toLocaleString()}`;
+        }
+
+        // 更新年度统计
+        function updateYearStats() {
+            const statsYear = document.getElementById('statsYear').value;
+            
+            const yearRecords = records.filter(r => {
+                return r.date && r.date.startsWith(statsYear);
+            });
+            
+            const totalSales = yearRecords.reduce((sum, r) => sum + r.sales, 0);
+            const totalCommission = yearRecords.reduce((sum, r) => sum + r.commission, 0);
+            const recordCount = yearRecords.length;
+            
+            // 获取有记录的月份集合
+            const monthsWithRecords = new Set(yearRecords.map(r => {
+                return r.date.substring(0, 7);
+            }));
+            const monthCount = monthsWithRecords.size;
+            
+            // 月均提成和月均工资（按有记录的月份计算）
+            const monthlyAvgCommission = monthCount > 0 ? totalCommission / monthCount : 0;
+            const monthlyAvgSalary = monthCount > 0 ? settings.baseSalary + monthlyAvgCommission : 0;
+            
+            // 年度工资 = 有记录月份的底薪 + 提成（不乘以12）
+            const yearlySalary = settings.baseSalary * monthCount + totalCommission;
+            
+            const statsCards = document.getElementById('yearStats').children;
+            statsCards[0].querySelector('.stat-value').textContent = `¥${totalSales.toLocaleString()}`;
+            statsCards[1].querySelector('.stat-value').textContent = `¥${totalCommission.toLocaleString()}`;
+            statsCards[2].querySelector('.stat-value').textContent = recordCount;
+            statsCards[3].querySelector('.stat-value').textContent = monthCount;
+            statsCards[4].querySelector('.stat-value').textContent = `¥${monthlyAvgCommission.toFixed(2)}`;
+            statsCards[5].querySelector('.stat-value').textContent = `¥${monthlyAvgSalary.toFixed(0)}`;
+            statsCards[6].querySelector('.stat-value').textContent = `¥${yearlySalary.toLocaleString()}`;
+        }
+
+        // 设置默认年份
+        function setDefaultYear() {
+            const now = new Date();
+            document.getElementById('statsYear').value = now.getFullYear().toString();
+        }
+
+        // 保存设置到本地存储
+        function saveSettings() {
+            localStorage.setItem('makeupSettings', JSON.stringify(settings));
+        }
+
+        // 保存记录到本地存储
+        function saveRecords() {
+            localStorage.setItem('makeupRecords', JSON.stringify(records));
+        }
+
+        // 从本地存储加载设置
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('makeupSettings');
+            if (savedSettings) {
+                settings = JSON.parse(savedSettings);
+                document.getElementById('baseSalary').value = settings.baseSalary;
+            }
+        }
+
+        // 从本地存储加载记录
+        function loadRecords() {
+            const savedRecords = localStorage.getItem('makeupRecords');
+            if (savedRecords) {
+                records = JSON.parse(savedRecords);
+            }
+        }
+
+        // 显示日期选择器
+        function showDatePicker(type) {
+            currentDatePickerType = type;
+            currentDate = new Date();
+            selectedDate = null;
+            
+            const calendarView = document.getElementById('calendarView');
+            const monthPickerView = document.getElementById('monthPickerView');
+            const title = document.getElementById('datePickerTitle');
+            
+            // 筛选和统计页面都使用月份选择器
+            title.textContent = '📅 选择月份';
+            calendarView.style.display = 'none';
+            monthPickerView.style.display = 'block';
+            renderMonthPicker();
+            
+            document.getElementById('datePickerModal').classList.add('show');
+        }
+
+        // 关闭日期选择器
+        function closeDatePicker() {
+            document.getElementById('datePickerModal').classList.remove('show');
+        }
+
+        // 渲染月份选择器
+        function renderMonthPicker() {
+            const year = currentDate.getFullYear();
+            document.getElementById('currentYear').textContent = `${year}年`;
+            
+            const monthGrid = document.getElementById('monthGrid');
+            monthGrid.innerHTML = '';
+            
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth() + 1;
+            
+            for (let month = 1; month <= 12; month++) {
+                const monthCell = document.createElement('div');
+                monthCell.className = 'month-cell';
+                monthCell.textContent = `${month}月`;
+                monthCell.dataset.month = month;
+                
+                // 标记当前月份
+                if (year === currentYear && month === currentMonth) {
+                    monthCell.classList.add('current');
+                }
+                
+                // 标记选中月份
+                if (selectedDate && selectedDate.getFullYear() === year && selectedDate.getMonth() + 1 === month) {
+                    monthCell.classList.add('selected');
+                }
+                
+                monthCell.addEventListener('click', function() {
+                    // 移除之前选中的
+                    document.querySelectorAll('.month-cell.selected').forEach(cell => {
+                        cell.classList.remove('selected');
+                    });
+                    // 添加选中样式
+                    this.classList.add('selected');
+                    // 更新选中日期
+                    selectedDate = new Date(year, parseInt(this.dataset.month) - 1, 1);
+                    
+                    // 自动确认选择
+                    confirmMonthSelection();
+                });
+                
+                monthGrid.appendChild(monthCell);
+            }
+        }
+
+        // 上一年
+        function prevYear() {
+            currentDate.setFullYear(currentDate.getFullYear() - 1);
+            renderMonthPicker();
+        }
+
+        // 下一年
+        function nextYear() {
+            currentDate.setFullYear(currentDate.getFullYear() + 1);
+            renderMonthPicker();
+        }
+
+        // 确认月份选择
+        function confirmMonthSelection() {
+            if (!selectedDate) {
+                showAlert('请选择一个月份');
+                return;
+            }
+            
+            const year = selectedDate.getFullYear();
+            const month = selectedDate.getMonth() + 1;
+            const monthText = `${year}年${month}月`;
+            
+            if (currentDatePickerType === 'stats') {
+                document.getElementById('statsMonthBtn').textContent = monthText;
+                updateMonthStats();
+            } else if (currentDatePickerType === 'filter') {
+                document.getElementById('dateFilterBtn').textContent = monthText;
+                filterRecords();
+            }
+            
+            closeDatePicker();
+        }
+
+        // 多日期选择相关变量
+        let selectedDates = [];
+        let datePickerMode = 'month';
+
+        // 显示日选择器（多选模式）
+        function showDayPicker() {
+            currentDate = new Date();
+            datePickerMode = 'day';
+            
+            const calendarView = document.getElementById('calendarView');
+            const monthPickerView = document.getElementById('monthPickerView');
+            const title = document.getElementById('datePickerTitle');
+            
+            title.textContent = '📅 选择日期（可多选）';
+            calendarView.style.display = 'block';
+            monthPickerView.style.display = 'none';
+            
+            renderDayCalendar();
+            document.getElementById('datePickerModal').classList.add('show');
+        }
+
+        // 渲染日历（多选模式）
+        function renderDayCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            document.getElementById('currentMonthYear').textContent = `${year}年${month + 1}月`;
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const prevMonthDays = new Date(year, month, 0).getDate();
+            
+            const calendarGrid = document.getElementById('calendarGrid');
+            calendarGrid.innerHTML = '';
+            
+            const today = new Date();
+            const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+            
+            for (let i = firstDay - 1; i >= 0; i--) {
+                const day = prevMonthDays - i;
+                const dayCell = document.createElement('div');
+                dayCell.className = 'calendar-day other-month';
+                dayCell.textContent = day;
+                calendarGrid.appendChild(dayCell);
+            }
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'calendar-day';
+                dayCell.textContent = day;
+                
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                
+                if (dateStr === todayStr) {
+                    dayCell.classList.add('today');
+                }
+                
+                if (selectedDates.includes(dateStr)) {
+                    dayCell.classList.add('multi-selected');
+                }
+                
+                dayCell.addEventListener('click', function() {
+                    toggleDateSelection(dateStr);
+                });
+                
+                calendarGrid.appendChild(dayCell);
+            }
+            
+            const remainingDays = 42 - (firstDay + daysInMonth);
+            for (let day = 1; day <= remainingDays; day++) {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'calendar-day other-month';
+                dayCell.textContent = day;
+                calendarGrid.appendChild(dayCell);
+            }
+            
+            updateDayPickerActions();
+        }
+
+        // 切换日期选择
+        function toggleDateSelection(dateStr) {
+            const index = selectedDates.indexOf(dateStr);
+            if (index > -1) {
+                selectedDates.splice(index, 1);
+            } else {
+                selectedDates.push(dateStr);
+            }
+            selectedDates.sort();
+            renderDayCalendar();
+        }
+
+        // 更新日选择器操作区
+        function updateDayPickerActions() {
+            const actionsDiv = document.querySelector('.day-picker-actions');
+            if (!actionsDiv) return;
+            
+            const countSpan = actionsDiv.querySelector('.selected-count');
+            if (countSpan) {
+                countSpan.textContent = `已选择 ${selectedDates.length} 个日期`;
+            }
+        }
+
+        // 清空已选日期
+        function clearSelectedDates() {
+            selectedDates = [];
+            renderDayCalendar();
+            updateSelectedDatesDisplay();
+        }
+
+        // 更新已选日期显示
+        function updateSelectedDatesDisplay() {
+            const btn = document.getElementById('dayFilterBtn');
+            const tagsContainer = document.getElementById('selectedDatesTags');
+            
+            if (selectedDates.length === 0) {
+                btn.textContent = '请选择日期';
+                tagsContainer.innerHTML = '';
+            } else {
+                btn.textContent = `已选择 ${selectedDates.length} 个日期`;
+                
+                tagsContainer.innerHTML = selectedDates.map(date => `
+                    <span class="date-tag">
+                        ${date}
+                        <span class="remove-tag" onclick="removeSelectedDate('${date}')">&times;</span>
+                    </span>
+                `).join('');
+            }
+        }
+
+        // 移除单个已选日期
+        function removeSelectedDate(dateStr) {
+            const index = selectedDates.indexOf(dateStr);
+            if (index > -1) {
+                selectedDates.splice(index, 1);
+            }
+            updateSelectedDatesDisplay();
+            if (selectedDates.length > 0) {
+                filterByDays();
+            } else {
+                document.getElementById('dayQueryResult').style.display = 'none';
+                document.getElementById('recordsListCard').style.display = 'block';
+            }
+        }
+
+        // 确认日期选择并查询
+        function confirmDaySelection() {
+            updateSelectedDatesDisplay();
+            closeDatePicker();
+            
+            if (selectedDates.length > 0) {
+                filterByDays();
+            }
+        }
+
+        // 按多日期查询
+        function filterByDays() {
+            const queryResult = document.getElementById('dayQueryContent');
+            const dayQueryResult = document.getElementById('dayQueryResult');
+            const recordsListCard = document.getElementById('recordsListCard');
+            
+            if (selectedDates.length === 0) {
+                dayQueryResult.style.display = 'none';
+                recordsListCard.style.display = 'block';
+                return;
+            }
+            
+            dayQueryResult.style.display = 'block';
+            recordsListCard.style.display = 'none';
+            
+            let allRecords = [];
+            let totalSales = 0;
+            let totalCommission = 0;
+            let totalLeaveDays = 0;
+            let totalTransferDays = 0;
+            let totalNormalDays = 0;
+            let totalDaySalary = 0;
+            
+            selectedDates.forEach(dateStr => {
+                const dayRecords = records.filter(r => r.date === dateStr);
+                allRecords = allRecords.concat(dayRecords);
+                
+                const normalRecords = dayRecords.filter(r => r.type === 'normal' || !r.type);
+                const leaveRecords = dayRecords.filter(r => r.type === 'leave');
+                const transferRecords = dayRecords.filter(r => r.type === 'transfer');
+                
+                totalSales += normalRecords.reduce((sum, r) => sum + r.sales, 0);
+                totalCommission += normalRecords.reduce((sum, r) => sum + r.commission, 0);
+                
+                if (leaveRecords.length > 0) totalLeaveDays++;
+                if (transferRecords.length > 0 && normalRecords.length === 0) totalTransferDays++;
+                if (normalRecords.length > 0) totalNormalDays++;
+            });
+            
+            const now = new Date();
+            const totalDays = getWorkingDaysInMonth(now.getFullYear(), now.getMonth() + 1);
+            const dailySalary = settings.baseSalary / totalDays;
+            
+            totalDaySalary = (totalNormalDays + totalTransferDays) * dailySalary;
+            
+            const totalIncome = totalDaySalary + totalCommission;
+            
+            let html = `
+                <div class="day-query-summary">
+                    <div class="summary-row">
+                        <span class="summary-label">查询日期</span>
+                        <span class="summary-value">${selectedDates.length} 个日期</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">记录类型</span>
+                        <span class="summary-value">
+                            ${totalNormalDays > 0 ? `<span class="record-type-badge normal">正常出勤 ${totalNormalDays}</span>` : ''}
+                            ${totalTransferDays > 0 ? `<span class="record-type-badge transfer">调休 ${totalTransferDays}</span>` : ''}
+                            ${totalLeaveDays > 0 ? `<span class="record-type-badge leave">请假 ${totalLeaveDays}</span>` : ''}
+                        </span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">总业绩</span>
+                        <span class="summary-value">¥${totalSales.toLocaleString()}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">总提成</span>
+                        <span class="summary-value">¥${totalCommission.toLocaleString()}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span class="summary-label">底薪合计</span>
+                        <span class="summary-value">¥${totalDaySalary.toFixed(2)} <small style="color:#6a7a88;">(请假${totalLeaveDays}天无底薪)</small></span>
+                    </div>
+                    <div class="summary-row" style="border-top: 1px solid #2a3a4a; margin-top: 5px; padding-top: 8px;">
+                        <span class="summary-label">总收入</span>
+                        <span class="summary-value highlight">¥${totalIncome.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
+            
+            selectedDates.forEach(dateStr => {
+                const dayRecords = records.filter(r => r.date === dateStr);
+                if (dayRecords.length > 0) {
+                    html += `<div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #2a3a4a;">
+                        <div style="font-size: 0.85rem; color: #7aa89a; margin-bottom: 8px;">📅 ${dateStr}</div>`;
+                    dayRecords.forEach(record => {
+                        html += createRecordCard(record, false);
+                    });
+                    html += '</div>';
+                }
+            });
+            
+            if (allRecords.length === 0) {
+                html = `
+                    <div class="empty-state">
+                        <div>📭</div>
+                        <p>所选日期暂无记录</p>
+                    </div>
+                `;
+            }
+            
+            queryResult.innerHTML = html;
+        }
+
+        // 渲染日历
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            // 更新月份年份显示
+            document.getElementById('currentMonthYear').textContent = `${year}年${month + 1}月`;
+            
+            // 获取当月第一天是星期几
+            const firstDay = new Date(year, month, 1).getDay();
+            // 获取当月天数
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            // 获取上个月天数
+            const prevMonthDays = new Date(year, month, 0).getDate();
+            
+            const calendarGrid = document.getElementById('calendarGrid');
+            calendarGrid.innerHTML = '';
+            
+            // 上个月的末尾几天
+            for (let i = firstDay - 1; i >= 0; i--) {
+                const day = prevMonthDays - i;
+                const dayCell = document.createElement('div');
+                dayCell.className = 'day-cell disabled';
+                dayCell.textContent = day;
+                calendarGrid.appendChild(dayCell);
+            }
+            
+            // 当月的所有天
+            const today = new Date();
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'day-cell';
+                dayCell.textContent = i;
+                dayCell.dataset.date = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                
+                // 标记今天
+                if (year === today.getFullYear() && month === today.getMonth() && i === today.getDate()) {
+                    dayCell.classList.add('today');
+                }
+                
+                // 标记选中日期
+                if (selectedDate && selectedDate.getFullYear() === year && selectedDate.getMonth() === month && selectedDate.getDate() === i) {
+                    dayCell.classList.add('selected');
+                }
+                
+                dayCell.addEventListener('click', function() {
+                    // 移除之前选中的
+                    document.querySelectorAll('.day-cell.selected').forEach(cell => {
+                        cell.classList.remove('selected');
+                    });
+                    // 添加选中样式
+                    this.classList.add('selected');
+                    // 更新选中日期
+                    selectedDate = new Date(this.dataset.date);
+                });
+                
+                calendarGrid.appendChild(dayCell);
+            }
+            
+            // 下个月的开头几天
+            const totalCells = 42; // 6行 * 7列
+            const remainingCells = totalCells - (firstDay + daysInMonth);
+            for (let i = 1; i <= remainingCells; i++) {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'day-cell disabled';
+                dayCell.textContent = i;
+                calendarGrid.appendChild(dayCell);
+            }
+        }
+
+        // 日选择器 - 上个月
+        function prevMonthDayPicker() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderDayCalendar();
+        }
+
+        // 日选择器 - 下个月
+        function nextMonthDayPicker() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderDayCalendar();
+        }
+
+        // 上个月
+        function prevMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        }
+
+        // 下个月
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        }
+
+        // 确认日期选择（仅用于筛选页面）
+        async function confirmDateSelection() {
+            if (!selectedDate) {
+                await showAlert('请选择一个日期');
+                return;
+            }
+            
+            const year = selectedDate.getFullYear();
+            const month = selectedDate.getMonth() + 1;
+            const monthText = `${year}年${month}月`;
+            
+            if (currentDatePickerType === 'filter') {
+                document.getElementById('dateFilterBtn').textContent = monthText;
+                filterRecords();
+            }
+            
+            closeDatePicker();
+        }
+
+        // 阻止图片拖拽
+        document.addEventListener('dragover', function(e) {
+            e.preventDefault();
+        });
+
+        document.addEventListener('drop', function(e) {
+            e.preventDefault();
+        });
+    </script>
+</body>
 </html>
