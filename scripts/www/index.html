@@ -13,6 +13,9 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            outline: none;
         }
         
         input, textarea {
@@ -20,6 +23,30 @@
             -moz-user-select: text;
             -ms-user-select: text;
             user-select: text;
+        }
+        
+        button, .btn, .type-option, .filter-tab, .nav-btn, .date-button, .date-action-btn, .gallery-close, .gallery-download, .gallery-nav, .tier-btn, .preview-remove {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            outline: none;
+            user-select: none;
+        }
+        
+        button:focus, .btn:focus, .type-option:focus, .filter-tab:focus, .nav-btn:focus, .date-button:focus, .date-action-btn:focus, .gallery-close:focus, .gallery-download:focus, .gallery-nav:focus, .tier-btn:focus, .preview-remove:focus {
+            outline: none;
+        }
+        
+        /* 针对所有可点击元素的额外保护 */
+        [onclick], [role="button"], a {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+        
+        /* 防止触摸设备上的默认高亮 */
+        @media (hover: none) and (pointer: coarse) {
+            * {
+                -webkit-tap-highlight-color: transparent;
+            }
         }
 
         body {
@@ -743,35 +770,6 @@
             background: #1a2228;
         }
 
-        /* 上传区域 */
-        .upload-area {
-            border: 1px dashed #3a4a58;
-            border-radius: 8px;
-            padding: 20px 15px;
-            text-align: center;
-            margin: 10px 0;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: #1a2228;
-        }
-
-        .upload-area:hover {
-            border-color: #5a8a7a;
-            background: rgba(90, 138, 122, 0.05);
-        }
-
-        .upload-area i {
-            font-size: 1.8rem;
-            color: #6a7a88;
-            margin-bottom: 8px;
-        }
-
-        .upload-area p {
-            color: #8a9aa8;
-            font-size: 0.8rem;
-            margin-top: 5px;
-        }
-
         /* 空状态 */
         .empty-state {
             text-align: center;
@@ -1372,10 +1370,10 @@
 </head>
 <body>
     <!-- 顶部标题栏 -->
-    <div class="header">
+    <!-- <div class="header">
         <h1>💄 美妆工资记录</h1>
         <div class="subtitle">专业美妆师收入管理工具</div>
-    </div>
+    </div> -->
 
     <!-- 首页 - 统计和快速记录 -->
     <div class="page active" id="homePage">
@@ -2252,7 +2250,7 @@
             }
             
             records.push(record);
-            saveRecords();
+            await saveRecords();
             
             const typeText = currentRecordType === 'normal' ? '业绩' : (currentRecordType === 'leave' ? '请假' : '调休');
             await showAlert(`✅ ${typeText}记录已保存`);
@@ -2465,7 +2463,7 @@
                     records = [];
                     
                     saveSettings();
-                    saveRecords();
+                    await saveRecords();
                     
                     updateTierList();
                     updateStatistics();
@@ -2710,7 +2708,7 @@
             const index = records.findIndex(r => r.id === recordId);
             if (index > -1) {
                 records.splice(index, 1);
-                saveRecords();
+                await saveRecords();
                 
                 await showAlert('✅ 记录已删除');
                 
@@ -2858,9 +2856,16 @@
 
         // 处理图片上传
         async function handleImageUpload(event) {
-            const files = event.target.files;
-            await processFiles(files);
-            event.target.value = '';
+            try {
+                const files = event.target.files;
+                if (!files || files.length === 0) return;
+                await processFiles(files);
+            } catch (error) {
+                console.error('上传图片时出错:', error);
+                await showAlert('图片上传失败，请重试');
+            } finally {
+                event.target.value = '';
+            }
         }
 
         // 处理文件
@@ -2884,9 +2889,14 @@
                     continue;
                 }
 
-                // 转换为base64
-                const base64 = await fileToBase64(file);
-                tempUploadedImages.push(base64);
+                try {
+                    // 转换为base64
+                    const base64 = await fileToBase64(file);
+                    tempUploadedImages.push(base64);
+                } catch (error) {
+                    console.error('转换图片时出错:', error);
+                    await showAlert(`图片 ${file.name} 处理失败，请重试`);
+                }
             }
 
             updateUploadPreview();
@@ -2897,7 +2907,7 @@
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onload = () => resolve(reader.result);
-                reader.onerror = reject;
+                reader.onerror = (error) => reject(error);
                 reader.readAsDataURL(file);
             });
         }
@@ -3134,30 +3144,68 @@
             document.getElementById('statsYear').value = now.getFullYear().toString();
         }
 
+        // 检查localStorage容量
+        function checkLocalStorageSize() {
+            let totalSize = 0;
+            for (let key in localStorage) {
+                if (localStorage.hasOwnProperty(key)) {
+                    totalSize += localStorage[key].length * 2;
+                }
+            }
+            return totalSize;
+        }
+
         // 保存设置到本地存储
         function saveSettings() {
-            localStorage.setItem('makeupSettings', JSON.stringify(settings));
+            try {
+                localStorage.setItem('makeupSettings', JSON.stringify(settings));
+            } catch (error) {
+                console.error('保存设置失败:', error);
+                showAlert('存储空间不足，请删除一些记录后重试');
+            }
         }
 
         // 保存记录到本地存储
-        function saveRecords() {
-            localStorage.setItem('makeupRecords', JSON.stringify(records));
+        async function saveRecords() {
+            try {
+                const recordsJson = JSON.stringify(records);
+                const sizeMB = (recordsJson.length * 2) / (1024 * 1024);
+                
+                // 警告：如果超过3MB提示用户
+                if (sizeMB > 3) {
+                    await showAlert(`当前数据量较大 (${sizeMB.toFixed(1)}MB)，建议删除一些旧记录`);
+                }
+                
+                localStorage.setItem('makeupRecords', recordsJson);
+            } catch (error) {
+                console.error('保存记录失败:', error);
+                await showAlert('存储空间不足，请删除一些记录和图片后重试');
+            }
         }
 
         // 从本地存储加载设置
         function loadSettings() {
-            const savedSettings = localStorage.getItem('makeupSettings');
-            if (savedSettings) {
-                settings = JSON.parse(savedSettings);
-                document.getElementById('baseSalary').value = settings.baseSalary;
+            try {
+                const savedSettings = localStorage.getItem('makeupSettings');
+                if (savedSettings) {
+                    settings = JSON.parse(savedSettings);
+                    document.getElementById('baseSalary').value = settings.baseSalary;
+                }
+            } catch (error) {
+                console.error('加载设置失败:', error);
             }
         }
 
         // 从本地存储加载记录
         function loadRecords() {
-            const savedRecords = localStorage.getItem('makeupRecords');
-            if (savedRecords) {
-                records = JSON.parse(savedRecords);
+            try {
+                const savedRecords = localStorage.getItem('makeupRecords');
+                if (savedRecords) {
+                    records = JSON.parse(savedRecords);
+                }
+            } catch (error) {
+                console.error('加载记录失败:', error);
+                records = [];
             }
         }
 
