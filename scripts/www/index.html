@@ -3554,6 +3554,9 @@
                 }
             });
             
+            // 处理输入框焦点和键盘弹出/收起事件
+            setupKeyboardScrolling();
+            
             // 添加FAB点击监听
             document.body.addEventListener('click', handleFABClick);
             
@@ -4035,30 +4038,27 @@
                     const salesInput = document.getElementById('quickSales');
                     const salesValue = salesInput.value.trim();
                     
-                    if (!salesValue) {
-                        await showAlert('请输入业绩金额');
-                        salesInput.focus();
-                        return;
-                    }
-                    
-                    const sales = parseFloat(salesValue);
-                    
-                    if (isNaN(sales)) {
-                        await showAlert('请输入有效的数字');
-                        salesInput.select();
-                        return;
-                    }
-                    
-                    if (sales <= 0) {
-                        await showAlert('业绩金额必须大于0');
-                        salesInput.select();
-                        return;
-                    }
-                    
-                    if (sales > 100000000) {
-                        await showAlert('业绩金额超出合理范围');
-                        salesInput.select();
-                        return;
+                    let sales = 0;
+                    if (salesValue) {
+                        sales = parseFloat(salesValue);
+                        
+                        if (isNaN(sales)) {
+                            await showAlert('请输入有效的数字');
+                            salesInput.select();
+                            return;
+                        }
+                        
+                        if (sales < 0) {
+                            await showAlert('业绩金额不能为负数');
+                            salesInput.select();
+                            return;
+                        }
+                        
+                        if (sales > 100000000) {
+                            await showAlert('业绩金额超出合理范围');
+                            salesInput.select();
+                            return;
+                        }
                     }
                     
                     record.sales = sales;
@@ -4504,7 +4504,7 @@
                 amountDisplay = '<div class="record-amount" style="color: #9aaa7a;">调休</div>';
                 noteDisplay = noteDisplay || '调休';
             } else {
-                typeBadge = '<span class="record-type-badge normal">正常</span>';
+                typeBadge = '<span class="record-type-badge normal">出勤</span>';
                 amountDisplay = `<div class="record-amount">¥${record.sales.toLocaleString()}</div>`;
             }
             
@@ -4733,6 +4733,57 @@
             const yearSelect = document.getElementById('statsYear');
             const currentYear = new Date().getFullYear();
             yearSelect.value = currentYear;
+        }
+
+        // 处理键盘弹出时的页面滚动
+        function setupKeyboardScrolling() {
+            // 获取所有输入框
+            const inputElements = document.querySelectorAll('input[type="text"], input[type="number"], textarea, select');
+            
+            // 为每个输入框添加焦点事件监听器
+            inputElements.forEach(input => {
+                input.addEventListener('focus', function() {
+                    // 延迟执行，确保虚拟键盘已经弹出
+                    setTimeout(() => {
+                        scrollInputIntoView(this);
+                    }, 300);
+                });
+            });
+            
+            // 监听键盘收起事件
+            window.addEventListener('resize', function() {
+                // 当窗口高度增加时，可能是键盘收起
+                if (window.innerHeight > document.body.clientHeight) {
+                    // 恢复页面滚动位置
+                    window.scrollTo(0, 0);
+                }
+            });
+        }
+
+        // 滚动输入框到可见区域
+        function scrollInputIntoView(inputElement) {
+            if (!inputElement) return;
+            
+            // 计算输入框的位置和高度
+            const rect = inputElement.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
+            const inputTop = rect.top;
+            const inputBottom = rect.bottom;
+            const inputHeight = rect.height;
+            
+            // 计算输入框需要的最小可见空间（包括一些额外的边距）
+            const minVisibleSpace = inputHeight * 2;
+            
+            // 检查输入框是否完全可见
+            if (inputTop < 0 || inputBottom > viewportHeight - minVisibleSpace) {
+                // 计算滚动距离，确保输入框在屏幕中央附近
+                const scrollTarget = inputElement.offsetTop - (viewportHeight / 2) + (inputHeight / 2);
+                // 平滑滚动
+                window.scrollTo({
+                    top: scrollTarget,
+                    behavior: 'smooth'
+                });
+            }
         }
 
         // 更新工作日信息
@@ -5058,7 +5109,7 @@
                             <div class="attendance-icon" style="background: rgba(107, 168, 148, 0.2);">✓</div>
                             <div class="attendance-info">
                                 <div class="attendance-value">${totalNormalDays}</div>
-                                <div class="attendance-label">正常出勤</div>
+                                <div class="attendance-label">出勤天数</div>
                             </div>
                         </div>
                         <div class="attendance-item">
