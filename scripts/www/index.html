@@ -214,6 +214,52 @@
             gap: 8px;
         }
 
+        /* 可折叠卡片样式 */
+        .collapsible-card {
+            overflow: hidden;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--bg-card-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .card-header:hover {
+            background: var(--bg-card-hover);
+        }
+
+        .card-header .card-title {
+            margin: 0;
+        }
+
+        .collapse-icon {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            transition: transform 0.3s;
+        }
+
+        .card-content {
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            padding: 15px;
+        }
+
+        .card-content.collapsed {
+            max-height: 0;
+            padding: 0 15px;
+        }
+
+        .collapse-icon.collapsed {
+            transform: rotate(-90deg);
+        }
+
         /* 统计网格 */
         .stats-grid {
             display: grid;
@@ -303,6 +349,124 @@
             right: 10px;
             top: 50%;
             transform: translateY(-50%);
+        }
+
+        /* 日期选择器容器 */
+        .date-selector {
+            display: flex;
+            gap: 8px;
+            align-items: stretch;
+        }
+
+        .date-selector .form-control {
+            flex: 1;
+            padding: 8px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-input);
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .date-selector .form-control:hover {
+            border-color: var(--color-accent);
+        }
+
+        .date-selector .form-control:focus {
+            outline: none;
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 3px rgba(255, 133, 194, 0.2);
+        }
+
+        .date-selector .btn-sm {
+            width: 40px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-card-secondary);
+            color: var(--text-primary);
+            border-radius: 8px;
+            transition: all 0.2s;
+            margin-top: 0;
+            box-shadow: none;
+        }
+
+        .date-selector .btn-sm:hover {
+            background: var(--color-accent);
+            color: #FFFFFF;
+            border-color: var(--color-accent);
+            transform: scale(1.05);
+        }
+
+        .date-selector .btn-sm:active {
+            transform: scale(0.95);
+        }
+
+        .date-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+            padding-left: 2px;
+        }
+
+        /* 使用说明样式 */
+        .usage-guide {
+            padding: 15px;
+            background: var(--bg-card-secondary);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .guide-section {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .guide-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .guide-section h4 {
+            margin: 0 0 10px 0;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .guide-section h5 {
+            margin: 12px 0 8px 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .guide-section p {
+            margin: 6px 0;
+            color: var(--text-secondary);
+        }
+
+        .guide-section ul {
+            margin: 8px 0 8px 20px;
+            padding: 0;
+        }
+
+        .guide-section li {
+            margin: 4px 0;
+            color: var(--text-secondary);
+        }
+
+        .guide-section strong {
+            color: var(--text-primary);
+            font-weight: 600;
         }
 
         /* 按钮样式 */
@@ -714,6 +878,20 @@
             font-weight: 600;
         }
 
+        .day-cell.disabled {
+            color: var(--text-muted);
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: var(--bg-card-secondary);
+        }
+
+        .day-cell.disabled:hover {
+            background: var(--bg-card-secondary);
+            color: var(--text-muted);
+            transform: none;
+            box-shadow: none;
+        }
+
         /* 多选状态 - 增强视觉标识 */
         .day-cell.multi-selected {
             background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-dark) 100%);
@@ -1069,74 +1247,6 @@
             margin-bottom: 3px;
         }
 
-        /* 月度业绩分布 */
-        .monthly-distribution-section {
-            margin-bottom: 20px;
-        }
-
-        .monthly-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-        }
-
-        .monthly-card {
-            background: var(--bg-card-secondary);
-            border-radius: 10px;
-            padding: 10px 8px;
-            text-align: center;
-            border: 1px solid var(--border-color);
-            transition: all 0.2s;
-            cursor: pointer;
-            position: relative;
-        }
-
-        .monthly-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px var(--shadow-color);
-            border-color: var(--color-accent);
-        }
-
-        .monthly-card.has-data {
-            border-color: var(--color-accent);
-            background: linear-gradient(135deg, rgba(255, 133, 194, 0.1) 0%, rgba(217, 70, 145, 0.1) 100%);
-        }
-
-        .monthly-month {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-bottom: 4px;
-        }
-
-        .monthly-sales {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-accent);
-            margin-bottom: 2px;
-        }
-
-        .monthly-commission {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-        }
-
-        .monthly-salary {
-            font-size: 0.7rem;
-            color: var(--text-primary);
-            font-weight: 500;
-            margin-top: 2px;
-        }
-
-        .monthly-indicator {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            width: 6px;
-            height: 6px;
-            background: var(--color-accent);
-            border-radius: 50%;
-        }
-
         /* 夜间模式适配 */
         [data-theme="dark"] .year-total-card {
             box-shadow: 0 8px 24px rgba(255, 147, 200, 0.2);
@@ -1175,10 +1285,6 @@
                 grid-template-columns: 1fr;
             }
 
-            .monthly-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-
             .breakdown-item {
                 flex: 1;
                 min-width: 80px;
@@ -1186,18 +1292,11 @@
         }
 
         @media (min-width: 481px) and (max-width: 768px) {
-            .monthly-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
         }
 
         @media (min-width: 769px) {
             .year-stats-grid {
                 grid-template-columns: repeat(4, 1fr);
-            }
-
-            .monthly-grid {
-                grid-template-columns: repeat(6, 1fr);
             }
         }
 
@@ -1971,12 +2070,12 @@
         }
 
         .custom-dialog {
-            background: var(--bg-card);
+            background: var(--bg-card-secondary);
             border-radius: 16px;
             padding: 24px;
             width: 90%;
             max-width: 360px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             border: 1px solid var(--border-color);
             animation: dialogSlideIn 0.3s ease;
         }
@@ -2308,7 +2407,7 @@
             </div>
             <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border-color);">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="color: var(--text-secondary); font-size: 0.9rem;">本月预估工资</span>
+                    <span style="color: var(--text-secondary); font-size: 0.9rem;">本月总工资</span>
                     <span style="color: var(--text-accent); font-size: 1.3rem; font-weight: 700;" id="monthlySalary">¥0</span>
                 </div>
             </div>
@@ -2322,7 +2421,7 @@
             <div class="record-type-selector">
                 <div class="type-option active" data-type="normal" onclick="selectRecordType('normal')">
                     <span class="type-icon">💰</span>
-                    <span class="type-text">正常出勤</span>
+                    <span class="type-text">出勤</span>
                 </div>
                 <div class="type-option" data-type="transfer" onclick="selectRecordType('transfer')">
                     <span class="type-icon">🔄</span>
@@ -2335,6 +2434,16 @@
             </div>
             
             <div id="recordTypeWarning"></div>
+            
+            <!-- 日期选择 -->
+            <div class="form-group">
+                <label class="form-label">记录日期</label>
+                <div class="date-selector">
+                    <input type="text" id="recordDate" class="form-control date-input" readonly placeholder="选择日期" onclick="openRecordDatePicker()">
+                    <button class="btn btn-sm" onclick="setTodayDate()" title="设置为今天">📅</button>
+                </div>
+                <div class="date-hint" id="dateHint">默认选择当天日期</div>
+            </div>
             
             <!-- 正常出勤字段 -->
             <div id="normalRecordFields">
@@ -2447,36 +2556,46 @@
 
     <!-- 统计页面 -->
     <div class="page" id="statsPage">
-        <div class="card">
-            <div class="card-title">📈 月度统计</div>
-            <div class="form-group">
-                <label class="form-label">选择月份</label>
-                <button class="date-button" id="statsMonthBtn" onclick="showDatePicker('stats')">
-                    请选择月份
-                </button>
+        <div class="card collapsible-card">
+            <div class="card-header" onclick="toggleCollapse('monthStats')">
+                <div class="card-title">📈 月度统计</div>
+                <div class="collapse-icon" id="monthStatsIcon">▼</div>
             </div>
-            <div class="stats-detail" id="monthStats">
-                <div class="empty-state">
-                    <div>📊</div>
-                    <p>请选择月份查看统计</p>
+            <div class="card-content" id="monthStatsContent">
+                <div class="form-group">
+                    <label class="form-label">选择月份</label>
+                    <button class="date-button" id="statsMonthBtn" onclick="showDatePicker('stats')">
+                        请选择月份
+                    </button>
+                </div>
+                <div class="stats-detail" id="monthStats">
+                    <div class="empty-state">
+                        <div>📊</div>
+                        <p>请选择月份查看统计</p>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="card">
-            <div class="card-title">📊 年度统计</div>
-            <div class="form-group">
-                <label class="form-label">选择年份</label>
-                <select id="statsYear" class="form-control" onchange="updateYearStats()">
-                    <option value="2026">2026</option>
-                    <option value="2025">2025</option>
-                    <option value="2024">2024</option>
-                </select>
+        <div class="card collapsible-card">
+            <div class="card-header" onclick="toggleCollapse('yearStats')">
+                <div class="card-title">📊 年度统计</div>
+                <div class="collapse-icon" id="yearStatsIcon">▼</div>
             </div>
-            <div class="stats-detail" id="yearStats">
-                <div class="empty-state">
-                    <div>📊</div>
-                    <p>请选择年份查看统计</p>
+            <div class="card-content" id="yearStatsContent">
+                <div class="form-group">
+                    <label class="form-label">选择年份</label>
+                    <select id="statsYear" class="form-control" onchange="updateYearStats()">
+                        <option value="2026">2026</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                    </select>
+                </div>
+                <div class="stats-detail" id="yearStats">
+                    <div class="empty-state">
+                        <div>📊</div>
+                        <p>请选择年份查看统计</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2505,30 +2624,34 @@
         <!-- 数据管理 -->
         <div class="card">
             <div class="card-title">💾 数据管理</div>
-            <button class="btn btn-outline" onclick="setDefaultTiers()">🔄 恢复默认设置</button>
+            <button class="btn btn-outline" style="margin-top: 10px;" onclick="setDefaultTiers()">🔄 恢复默认设置</button>
             <button class="btn btn-secondary" style="margin-top: 10px;" onclick="clearAllData()">🗑️ 清空所有数据</button>
         </div>
+
+
     </div>
+    
+
 
     <!-- 底部导航 -->
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchPage('homePage')">
-            <i>🏠</i>
-            <span>首页</span>
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="switchPage('homePage')">
+                <i>🏠</i>
+                <span>首页</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('recordsPage')">
+                <i>📋</i>
+                <span>记录</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('statsPage')">
+                <i>📊</i>
+                <span>统计</span>
+            </div>
+            <div class="nav-item" onclick="switchPage('settingsPage')">
+                <i>⚙️</i>
+                <span>设置</span>
+            </div>
         </div>
-        <div class="nav-item" onclick="switchPage('recordsPage')">
-            <i>📋</i>
-            <span>记录</span>
-        </div>
-        <div class="nav-item" onclick="switchPage('statsPage')">
-            <i>📊</i>
-            <span>统计</span>
-        </div>
-        <div class="nav-item" onclick="switchPage('settingsPage')">
-            <i>⚙️</i>
-            <span>设置</span>
-        </div>
-    </div>
 
     <!-- 添加阶梯模态框 -->
     <div class="modal" id="addTierModal">
@@ -2639,6 +2762,19 @@
         </div>
     </div>
 
+    <!-- 记录日期选择器模态框 -->
+    <div class="modal date-picker-modal" id="recordDatePickerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="recordDatePickerTitle">选择日期</div>
+                <button class="modal-close" onclick="closeRecordDatePicker()">&times;</button>
+            </div>
+            <div id="recordDatePickerContent"></div>
+        </div>
+    </div>
+    
+
+
     <!-- 自定义对话框 -->
     <div class="custom-dialog-overlay" id="customDialog">
         <div class="custom-dialog">
@@ -2651,9 +2787,65 @@
     </div>
 
     <script>
+        // ==================== 类型定义 ====================
+        
+        /**
+         * @typedef {Object} Record
+         * @property {number} id - 记录ID
+         * @property {string} date - 日期 (YYYY-MM-DD)
+         * @property {'normal'|'leave'|'transfer'} type - 记录类型
+         * @property {number} sales - 业绩金额
+         * @property {number} commission - 提成金额
+         * @property {string} note - 备注
+         * @property {string[]} images - 图片数组
+         * @property {string} timestamp - 时间戳
+         */
+
+        /**
+         * @typedef {Object} Settings
+         * @property {number} baseSalary - 底薪
+         * @property {number} leaveDays - 请假天数
+         * @property {Tier[]} tiers - 阶梯设置
+         */
+
+        /**
+         * @typedef {Object} Tier
+         * @property {number} min - 最小销售额
+         * @property {number} max - 最大销售额 (0表示无上限)
+         * @property {number} rate - 提成比例
+         */
+
+        // ==================== 配置常量 ====================
+        
+        const CONFIG = {
+            CLICK_THRESHOLD: 300,
+            SWIPE_THRESHOLD: 50,
+            MAX_IMAGE_SIZE: 10 * 1024 * 1024,
+            MAX_IMAGES_PER_RECORD: 10,
+            ANIMATION_DURATION: 300,
+            DEFAULT_BASE_SALARY: 3000,
+            DB_NAME: 'makeupRecordDB',
+            DB_VERSION: 1,
+            MAX_RETRIES: 3,
+            RETRY_DELAY: 500,
+            IMAGE_MAX_WIDTH: 1920,
+            IMAGE_QUALITY: 0.8,
+            ALLOWED_IMAGE_TYPES: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp'],
+            DEFAULT_TIERS: [
+                { min: 0, max: 10000, rate: 5 },
+                { min: 10000, max: 20000, rate: 8 },
+                { min: 20000, max: 0, rate: 10 }
+            ]
+        };
+
         // ==================== 工具函数 ====================
         
-        // 防抖函数
+        /**
+         * 防抖函数
+         * @param {Function} func - 要防抖的函数
+         * @param {number} wait - 等待时间(ms)
+         * @returns {Function} 防抖后的函数
+         */
         function debounce(func, wait) {
             let timeout;
             return function executedFunction(...args) {
@@ -2666,7 +2858,12 @@
             };
         }
 
-        // 节流函数
+        /**
+         * 节流函数
+         * @param {Function} func - 要节流的函数
+         * @param {number} limit - 时间限制(ms)
+         * @returns {Function} 节流后的函数
+         */
         function throttle(func, limit) {
             let inThrottle;
             return function(...args) {
@@ -2678,7 +2875,11 @@
             };
         }
 
-        // XSS防护：转义HTML
+        /**
+         * XSS防护：转义HTML特殊字符
+         * @param {string} text - 要转义的文本
+         * @returns {string} 转义后的文本
+         */
         function escapeHtml(text) {
             if (typeof text !== 'string') return '';
             const div = document.createElement('div');
@@ -2686,14 +2887,29 @@
             return div.innerHTML;
         }
 
-        // 输入验证
         function validateNumber(value, min = 0, max = Infinity) {
+            if (value === null || value === undefined || value === '') return false;
             const num = parseFloat(value);
             return !isNaN(num) && num >= min && num <= max;
         }
 
         function validateString(value, maxLength = 500) {
             return typeof value === 'string' && value.length <= maxLength;
+        }
+
+        async function withRetry(operation, maxRetries = CONFIG.MAX_RETRIES, delay = CONFIG.RETRY_DELAY) {
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    return await operation();
+                } catch (error) {
+                    console.error(`操作失败，第${i + 1}次重试:`, error);
+                    if (i < maxRetries - 1) {
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    } else {
+                        throw error;
+                    }
+                }
+            }
         }
 
         // ==================== 对话框系统 ====================
@@ -2910,17 +3126,14 @@
 
         // ==================== IndexedDB 数据库操作 ====================
         
-        const DB_NAME = 'makeupRecordDB';
-        const DB_VERSION = 1;
         let db = null;
         let dbInitPromise = null;
 
-        // 初始化IndexedDB
         function initIndexedDB() {
             if (dbInitPromise) return dbInitPromise;
             
             dbInitPromise = new Promise((resolve, reject) => {
-                const request = indexedDB.open(DB_NAME, DB_VERSION);
+                const request = indexedDB.open(CONFIG.DB_NAME, CONFIG.DB_VERSION);
 
                 request.onerror = (event) => {
                     console.error('IndexedDB 打开失败:', event.target.error);
@@ -2933,17 +3146,15 @@
                 };
 
                 request.onupgradeneeded = (event) => {
-                    const db = event.target.result;
+                    const database = event.target.result;
 
-                    // 创建设置存储
-                    if (!db.objectStoreNames.contains('settings')) {
-                        const settingsStore = db.createObjectStore('settings', { keyPath: 'id' });
+                    if (!database.objectStoreNames.contains('settings')) {
+                        const settingsStore = database.createObjectStore('settings', { keyPath: 'id' });
                         settingsStore.createIndex('id', 'id', { unique: true });
                     }
 
-                    // 创建记录存储
-                    if (!db.objectStoreNames.contains('records')) {
-                        const recordsStore = db.createObjectStore('records', { keyPath: 'id' });
+                    if (!database.objectStoreNames.contains('records')) {
+                        const recordsStore = database.createObjectStore('records', { keyPath: 'id' });
                         recordsStore.createIndex('date', 'date');
                         recordsStore.createIndex('type', 'type');
                         recordsStore.createIndex('timestamp', 'timestamp');
@@ -2954,28 +3165,27 @@
             return dbInitPromise;
         }
 
-        // 数据操作 API
         const dbAPI = {
-            // 保存设置
-            saveSettings: async function(settings) {
+            async saveSettings(settingsData) {
                 if (!db) await initIndexedDB();
                 
-                return new Promise((resolve, reject) => {
-                    const transaction = db.transaction(['settings'], 'readwrite');
-                    const store = transaction.objectStore('settings');
-                    
-                    const request = store.put({ id: 'default', ...settings });
-                    
-                    request.onsuccess = () => resolve();
-                    request.onerror = (event) => {
-                        console.error('保存设置失败:', event.target.error);
-                        reject(event.target.error);
-                    };
+                return withRetry(async () => {
+                    return new Promise((resolve, reject) => {
+                        const transaction = db.transaction(['settings'], 'readwrite');
+                        const store = transaction.objectStore('settings');
+                        
+                        const request = store.put({ id: 'default', ...settingsData });
+                        
+                        request.onsuccess = () => resolve();
+                        request.onerror = (event) => {
+                            console.error('保存设置失败:', event.target.error);
+                            reject(event.target.error);
+                        };
+                    });
                 });
             },
 
-            // 加载设置
-            loadSettings: async function() {
+            async loadSettings() {
                 if (!db) await initIndexedDB();
                 
                 return new Promise((resolve, reject) => {
@@ -2994,49 +3204,47 @@
                 });
             },
 
-            // 保存记录
-            saveRecords: async function(records) {
+            async saveRecords(recordsData) {
                 if (!db) await initIndexedDB();
                 
-                return new Promise((resolve, reject) => {
-                    const transaction = db.transaction(['records'], 'readwrite');
-                    const store = transaction.objectStore('records');
-                    
-                    // 清空现有记录
-                    const clearRequest = store.clear();
-                    
-                    clearRequest.onsuccess = () => {
-                        // 批量添加记录
-                        let count = 0;
-                        const total = records.length;
+                return withRetry(async () => {
+                    return new Promise((resolve, reject) => {
+                        const transaction = db.transaction(['records'], 'readwrite');
+                        const store = transaction.objectStore('records');
                         
-                        if (total === 0) {
-                            resolve();
-                            return;
-                        }
+                        const clearRequest = store.clear();
                         
-                        records.forEach(record => {
-                            const request = store.add(record);
-                            request.onsuccess = () => {
-                                count++;
-                                if (count === total) resolve();
-                            };
-                            request.onerror = (event) => {
-                                console.error('保存记录失败:', event.target.error);
-                                reject(event.target.error);
-                            };
-                        });
-                    };
-                    
-                    clearRequest.onerror = (event) => {
-                        console.error('清空记录失败:', event.target.error);
-                        reject(event.target.error);
-                    };
+                        clearRequest.onsuccess = () => {
+                            let count = 0;
+                            const total = recordsData.length;
+                            
+                            if (total === 0) {
+                                resolve();
+                                return;
+                            }
+                            
+                            recordsData.forEach(record => {
+                                const request = store.add(record);
+                                request.onsuccess = () => {
+                                    count++;
+                                    if (count === total) resolve();
+                                };
+                                request.onerror = (event) => {
+                                    console.error('保存记录失败:', event.target.error);
+                                    reject(event.target.error);
+                                };
+                            });
+                        };
+                        
+                        clearRequest.onerror = (event) => {
+                            console.error('清空记录失败:', event.target.error);
+                            reject(event.target.error);
+                        };
+                    });
                 });
             },
 
-            // 加载记录
-            loadRecords: async function() {
+            async loadRecords() {
                 if (!db) await initIndexedDB();
                 
                 return new Promise((resolve, reject) => {
@@ -3054,8 +3262,7 @@
                 });
             },
 
-            // 删除记录
-            deleteRecord: async function(recordId) {
+            async deleteRecord(recordId) {
                 if (!db) await initIndexedDB();
                 
                 return new Promise((resolve, reject) => {
@@ -3177,44 +3384,43 @@
         // ==================== 数据存储 ====================
         
         let settings = {
-            baseSalary: 3000,
+            baseSalary: CONFIG.DEFAULT_BASE_SALARY,
             leaveDays: 0,
-            tiers: [
-                { min: 0, max: 10000, rate: 5 },
-                { min: 10000, max: 20000, rate: 8 },
-                { min: 20000, max: 0, rate: 10 }
-            ]
+            tiers: JSON.parse(JSON.stringify(CONFIG.DEFAULT_TIERS))
         };
 
         let records = [];
         let currentDatePickerType = '';
         let currentDate = new Date();
         let selectedDate = null;
+        let isSaving = false;
 
-        // 获取当月自然天数（不排除周末和节假日）
         function getWorkingDaysInMonth(year, month) {
             return new Date(year, month, 0).getDate();
         }
 
-        // 计算当月请假记录天数
+        function getRecordDaysByType(year, month, type) {
+            const targetMonth = `${year}-${String(month).padStart(2, '0')}`;
+            const filteredRecords = records.filter(r => {
+                return r.date && r.date.startsWith(targetMonth) && r.type === type;
+            });
+            return new Set(filteredRecords.map(r => r.date)).size;
+        }
+
         function getLeaveRecordDays(year, month) {
-            const targetMonth = `${year}-${String(month).padStart(2, '0')}`;
-            const leaveRecords = records.filter(r => {
-                return r.date && r.date.startsWith(targetMonth) && r.type === 'leave';
-            });
-            return new Set(leaveRecords.map(r => r.date)).size;
+            return getRecordDaysByType(year, month, 'leave');
         }
 
-        // 计算当月调休记录天数
         function getTransferRecordDays(year, month) {
-            const targetMonth = `${year}-${String(month).padStart(2, '0')}`;
-            const transferRecords = records.filter(r => {
-                return r.date && r.date.startsWith(targetMonth) && r.type === 'transfer';
-            });
-            return new Set(transferRecords.map(r => r.date)).size;
+            return getRecordDaysByType(year, month, 'transfer');
         }
 
-        // 计算当月正常出勤天数
+        /**
+         * 获取当月正常出勤天数
+         * @param {number} year - 年份
+         * @param {number} month - 月份 (1-12)
+         * @returns {number} 正常出勤天数
+         */
         function getNormalRecordDays(year, month) {
             const targetMonth = `${year}-${String(month).padStart(2, '0')}`;
             const normalRecords = records.filter(r => {
@@ -3223,16 +3429,43 @@
             return new Set(normalRecords.map(r => r.date)).size;
         }
 
-        // 计算当月应发底薪（根据记录类型计算）
+        /**
+         * 获取当月各类型记录统计
+         * @param {number} year - 年份
+         * @param {number} month - 月份 (1-12)
+         * @returns {{normalDays: number, transferDays: number, leaveDays: number}} 各类型天数统计
+         */
+        function getMonthRecordStats(year, month) {
+            const targetMonth = `${year}-${String(month).padStart(2, '0')}`;
+            const stats = { normal: new Set(), transfer: new Set(), leave: new Set() };
+            
+            records.forEach(r => {
+                if (r.date && r.date.startsWith(targetMonth)) {
+                    const type = r.type || 'normal';
+                    if (stats[type]) {
+                        stats[type].add(r.date);
+                    }
+                }
+            });
+            
+            return {
+                normalDays: stats.normal.size,
+                transferDays: stats.transfer.size,
+                leaveDays: stats.leave.size
+            };
+        }
+
+        /**
+         * 计算当月应发底薪
+         * @param {number} year - 年份
+         * @param {number} month - 月份 (1-12)
+         * @returns {number} 当月应发底薪金额
+         * @description 根据出勤记录计算底薪，请假天数不发放底薪，无记录月份返回0
+         */
         function calculateBaseSalary(year, month) {
-            const leaveRecordDays = getLeaveRecordDays(year, month);
-            const transferRecordDays = getTransferRecordDays(year, month);
-            const normalRecordDays = getNormalRecordDays(year, month);
+            const stats = getMonthRecordStats(year, month);
+            const totalRecordedDays = stats.normalDays + stats.transferDays + stats.leaveDays;
             
-            // 检查该月是否有任何记录
-            const totalRecordedDays = normalRecordDays + transferRecordDays + leaveRecordDays;
-            
-            // 如果没有任何记录，不计算底薪
             if (totalRecordedDays === 0) {
                 return 0;
             }
@@ -3242,22 +3475,11 @@
             if (totalDays === 0) return settings.baseSalary;
             
             const dailySalary = settings.baseSalary / totalDays;
-            
-            // 请假天数不发放底薪，调休和正常出勤正常发放
-            const paidDays = normalRecordDays + transferRecordDays;
-            
-            // 计算有记录的总天数
-            const recordedDays = normalRecordDays + transferRecordDays + leaveRecordDays;
-            
-            // 无记录的天数，根据设置中的请假天数处理
-            const unrecordedDays = totalDays - recordedDays;
+            const paidDays = stats.normalDays + stats.transferDays;
+            const unrecordedDays = totalDays - totalRecordedDays;
             const settingsLeaveDays = settings.leaveDays || 0;
-            
-            // 无记录天数中，扣除设置中的请假天数
             const unpaidUnrecordedDays = Math.min(settingsLeaveDays, unrecordedDays);
             const paidUnrecordedDays = unrecordedDays - unpaidUnrecordedDays;
-            
-            // 总发放底薪 = 有记录的正常/调休天数 + 无记录但未请假的天数
             const totalPaidDays = paidDays + paidUnrecordedDays;
             
             return dailySalary * totalPaidDays;
@@ -3283,6 +3505,7 @@
                 updateLatestRecords();
                 updateRecordsList();
                 setDefaultYear();
+                initDatePicker();
                 updateRecordTypeSelector();
                 initDragDrop();
                 initGalleryTouch();
@@ -3295,6 +3518,7 @@
                 updateLatestRecords();
                 updateRecordsList();
                 setDefaultYear();
+                initDatePicker();
                 updateRecordTypeSelector();
                 initDragDrop();
                 initGalleryTouch();
@@ -3332,6 +3556,9 @@
             
             // 添加FAB点击监听
             document.body.addEventListener('click', handleFABClick);
+            
+            // 初始化折叠状态
+            initCollapseStates();
         });
 
         // 切换页面
@@ -3357,7 +3584,85 @@
             } else if (pageId === 'statsPage') {
                 updateMonthStats();
                 updateYearStats();
+                // 加载折叠状态
+                loadCollapseStates();
             }
+        }
+
+        // 切换折叠状态
+        function toggleCollapse(moduleId) {
+            const content = document.getElementById(`${moduleId}Content`);
+            const icon = document.getElementById(`${moduleId}Icon`);
+            
+            if (content) {
+                content.classList.toggle('collapsed');
+                icon.classList.toggle('collapsed');
+                
+                // 保存折叠状态
+                const isCollapsed = content.classList.contains('collapsed');
+                saveCollapseState(moduleId, isCollapsed);
+            }
+        }
+
+        // 保存折叠状态到本地存储
+        function saveCollapseState(moduleId, isCollapsed) {
+            try {
+                const collapseStates = JSON.parse(localStorage.getItem('collapseStates') || '{}');
+                collapseStates[moduleId] = isCollapsed;
+                localStorage.setItem('collapseStates', JSON.stringify(collapseStates));
+            } catch (error) {
+                console.error('保存折叠状态失败:', error);
+            }
+        }
+
+        // 加载折叠状态
+        function loadCollapseStates() {
+            try {
+                const collapseStates = JSON.parse(localStorage.getItem('collapseStates') || '{}');
+                
+                // 应用折叠状态
+                Object.keys(collapseStates).forEach(moduleId => {
+                    const content = document.getElementById(`${moduleId}Content`);
+                    const icon = document.getElementById(`${moduleId}Icon`);
+                    
+                    if (content && icon) {
+                        if (collapseStates[moduleId]) {
+                            content.classList.add('collapsed');
+                            icon.classList.add('collapsed');
+                        } else {
+                            content.classList.remove('collapsed');
+                            icon.classList.remove('collapsed');
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('加载折叠状态失败:', error);
+            }
+        }
+
+        // 初始化折叠状态
+        function initCollapseStates() {
+            // 初始加载时设置默认状态
+            const modules = ['monthStats', 'yearStats'];
+            modules.forEach(moduleId => {
+                const content = document.getElementById(`${moduleId}Content`);
+                const icon = document.getElementById(`${moduleId}Icon`);
+                
+                if (content && icon) {
+                    // 检查是否有保存的状态
+                    try {
+                        const collapseStates = JSON.parse(localStorage.getItem('collapseStates') || '{}');
+                        const isCollapsed = collapseStates[moduleId] || false;
+                        
+                        if (isCollapsed) {
+                            content.classList.add('collapsed');
+                            icon.classList.add('collapsed');
+                        }
+                    } catch (error) {
+                        console.error('初始化折叠状态失败:', error);
+                    }
+                }
+            });
         }
 
         // 计算快速提成
@@ -3417,7 +3722,11 @@
         function checkTodayRecordType() {
             const now = new Date();
             const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-            
+            return checkDateRecordType(date);
+        }
+
+        // 检查指定日期的记录类型
+        function checkDateRecordType(date) {
             if (!records || !Array.isArray(records)) {
                 return {
                     hasRecord: false,
@@ -3431,10 +3740,10 @@
                 };
             }
             
-            const todayRecords = records.filter(r => r.date === date);
-            const leaveRecord = todayRecords.find(r => r.type === 'leave');
-            const transferRecord = todayRecords.find(r => r.type === 'transfer');
-            const normalRecords = todayRecords.filter(r => r.type === 'normal');
+            const dateRecords = records.filter(r => r.date === date);
+            const leaveRecord = dateRecords.find(r => r.type === 'leave');
+            const transferRecord = dateRecords.find(r => r.type === 'transfer');
+            const normalRecords = dateRecords.filter(r => r.type === 'normal');
             
             return {
                 hasRecord: !!(leaveRecord || transferRecord || normalRecords.length > 0),
@@ -3447,14 +3756,169 @@
                 type: leaveRecord ? 'leave' : (transferRecord ? 'transfer' : (normalRecords.length > 0 ? 'normal' : null))
             };
         }
+        
+
+
+        // 初始化日期选择器
+        function initDatePicker() {
+            const dateInput = document.getElementById('recordDate');
+            if (dateInput) {
+                const today = new Date();
+                const todayStr = today.toISOString().split('T')[0];
+                dateInput.value = todayStr;
+            }
+        }
+
+        // 打开记录日期选择器
+        function openRecordDatePicker() {
+            const modal = document.getElementById('recordDatePickerModal');
+            const content = document.getElementById('recordDatePickerContent');
+            
+            content.innerHTML = generateRecordDatePicker();
+            modal.classList.add('show');
+        }
+
+        // 关闭记录日期选择器
+        function closeRecordDatePicker() {
+            document.getElementById('recordDatePickerModal').classList.remove('show');
+        }
+
+        // 生成记录日期选择器
+        function generateRecordDatePicker() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = today.getMonth();
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const daysInPrevMonth = new Date(year, month, 0).getDate();
+            
+            let html = `
+                <div class="calendar-header">
+                    <button class="nav-btn" onclick="prevRecordMonth()">&#8249;</button>
+                    <div class="calendar-title">${year}年${month + 1}月</div>
+                    <button class="nav-btn" onclick="nextRecordMonth()">&#8250;</button>
+                </div>
+                <div class="weekdays">
+                    <div class="weekday">日</div>
+                    <div class="weekday">一</div>
+                    <div class="weekday">二</div>
+                    <div class="weekday">三</div>
+                    <div class="weekday">四</div>
+                    <div class="weekday">五</div>
+                    <div class="weekday">六</div>
+                </div>
+                <div class="days-grid">
+            `;
+            
+            // 上月日期
+            for (let i = firstDay - 1; i >= 0; i--) {
+                const day = daysInPrevMonth - i;
+                html += `<div class="day-cell other-month">${day}</div>`;
+            }
+            
+            // 当月日期
+            const dateInput = document.getElementById('recordDate');
+            const selectedDateStr = dateInput ? dateInput.value : '';
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const isSelected = dateStr === selectedDateStr;
+                const isToday = today.getFullYear() === year && today.getMonth() === month && today.getDate() === day;
+                const isFuture = new Date(dateStr) > today;
+                
+                html += `
+                    <div class="day-cell ${isSelected ? 'selected' : ''} ${isToday ? 'today' : ''} ${isFuture ? 'disabled' : ''}" 
+                         data-date="${dateStr}"
+                         onclick="${isFuture ? '' : `selectRecordDate('${dateStr}')`}">
+                        ${day}
+                    </div>
+                `;
+            }
+            
+            // 下月日期
+            const remainingCells = 42 - (firstDay + daysInMonth);
+            for (let day = 1; day <= remainingCells; day++) {
+                html += `<div class="day-cell other-month">${day}</div>`;
+            }
+            
+            html += '</div>';
+            return html;
+        }
+
+        // 上个月
+        function prevRecordMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            document.getElementById('recordDatePickerContent').innerHTML = generateRecordDatePicker();
+        }
+
+        // 下个月
+        function nextRecordMonth() {
+            const today = new Date();
+            const newDate = new Date(currentDate);
+            newDate.setMonth(currentDate.getMonth() + 1);
+            
+            // 不允许选择未来月份
+            if (newDate.getMonth() === today.getMonth() && newDate.getFullYear() === today.getFullYear()) {
+                return;
+            }
+            
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            document.getElementById('recordDatePickerContent').innerHTML = generateRecordDatePicker();
+        }
+
+        // 设置今天日期
+        function setTodayDate() {
+            const dateInput = document.getElementById('recordDate');
+            if (dateInput) {
+                const today = new Date();
+                const todayStr = today.toISOString().split('T')[0];
+                dateInput.value = todayStr;
+                validateRecordDate();
+                updateRecordTypeSelector();
+            }
+        }
+
+        // 验证记录日期
+        function validateRecordDate() {
+            const dateInput = document.getElementById('recordDate');
+            const dateHint = document.getElementById('dateHint');
+            if (dateInput && dateHint) {
+                const selectedDate = new Date(dateInput.value);
+                const today = new Date();
+                today.setHours(23, 59, 59, 999);
+                
+                if (selectedDate > today) {
+                    dateHint.innerHTML = '<span style="color: #f44336;">⚠️ 不能选择未来日期</span>';
+                    return false;
+                } else {
+                    dateHint.innerHTML = '默认选择当天日期';
+                    updateRecordTypeSelector();
+                    return true;
+                }
+            }
+            return true;
+        }
+
+        // 选择记录日期
+        function selectRecordDate(dateStr) {
+            const dateInput = document.getElementById('recordDate');
+            if (dateInput) {
+                dateInput.value = dateStr;
+                validateRecordDate();
+                closeRecordDatePicker();
+            }
+        }
 
         // 更新记录类型选择器的禁用状态
         function updateRecordTypeSelector() {
-            const todayRecord = checkTodayRecordType();
+            const dateInput = document.getElementById('recordDate');
+            const selectedDate = dateInput ? dateInput.value : null;
+            const targetRecord = selectedDate ? checkDateRecordType(selectedDate) : checkTodayRecordType();
             const typeOptions = document.querySelectorAll('.type-option');
             let warningHTML = '';
             
-            if (!todayRecord || !todayRecord.hasRecord) {
+            if (!targetRecord || !targetRecord.hasRecord) {
                 typeOptions.forEach(opt => {
                     opt.classList.remove('disabled');
                     opt.style.opacity = opt.classList.contains('active') ? '1' : '0.5';
@@ -3472,13 +3936,13 @@
             });
             
             const existingTypes = [];
-            if (todayRecord.hasNormal) existingTypes.push('出勤');
-            if (todayRecord.hasTransfer) existingTypes.push('调休');
-            if (todayRecord.hasLeave) existingTypes.push('请假');
+            if (targetRecord.hasNormal) existingTypes.push('出勤');
+            if (targetRecord.hasTransfer) existingTypes.push('调休');
+            if (targetRecord.hasLeave) existingTypes.push('请假');
             
             warningHTML = `
                 <div style="background: #3a2a2a; border: 1px solid #5a3a3a; border-radius: 8px; padding: 10px; margin-top: 10px;">
-                    <span style="color: #a87a7a; font-size: 0.85rem;">⚠️ 今日已创建${existingTypes.join('、')}记录，请删除后重新创建</span>
+                    <span style="color: #a87a7a; font-size: 0.85rem;">⚠️ ${selectedDate ? selectedDate + '已' : '今日已'}创建${existingTypes.join('、')}，删除后重新创建</span>
                 </div>
             `;
             
@@ -3488,14 +3952,16 @@
 
         // 选择记录类型
         function selectRecordType(type) {
-            const todayRecord = checkTodayRecordType();
+            const dateInput = document.getElementById('recordDate');
+            const selectedDate = dateInput ? dateInput.value : null;
+            const targetRecord = selectedDate ? checkDateRecordType(selectedDate) : checkTodayRecordType();
             
-            if (todayRecord) {
-                if ((type === 'leave' && todayRecord.hasLeave) || 
-                    (type === 'transfer' && todayRecord.hasTransfer) ||
-                    (type === 'normal' && todayRecord.hasNormal)) {
-                } else if ((type === 'leave' && todayRecord.hasTransfer) || 
-                           (type === 'transfer' && todayRecord.hasLeave)) {
+            if (targetRecord) {
+                if ((type === 'leave' && targetRecord.hasLeave) || 
+                    (type === 'transfer' && targetRecord.hasTransfer) ||
+                    (type === 'normal' && targetRecord.hasNormal)) {
+                } else if ((type === 'leave' && targetRecord.hasTransfer) || 
+                           (type === 'transfer' && targetRecord.hasLeave)) {
                 } else {
                     currentRecordType = type;
                 }
@@ -3521,82 +3987,140 @@
             if (transferFields) transferFields.style.display = type === 'transfer' ? 'block' : 'none';
         }
 
-        // 快速保存记录
         async function quickSaveRecord() {
-            const now = new Date();
-            const date = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
-            
-            const todayRecord = checkTodayRecordType();
-            
-            if (todayRecord && todayRecord.hasRecord) {
-                const existingTypes = [];
-                if (todayRecord.hasNormal) existingTypes.push('出勤');
-                if (todayRecord.hasTransfer) existingTypes.push('调休');
-                if (todayRecord.hasLeave) existingTypes.push('请假');
-                await showAlert(`今日已创建${existingTypes.join('、')}记录，请删除后重新创建`);
+            if (isSaving) {
+                await showAlert('正在保存中，请稍候...');
                 return;
             }
             
-            let record = {
-                id: Date.now(),
-                date: date,
-                type: currentRecordType,
-                sales: 0,
-                commission: 0,
-                note: '',
-                images: [...tempUploadedImages],
-                timestamp: now.toISOString()
-            };
+            isSaving = true;
             
-            if (currentRecordType === 'normal') {
-                const sales = parseFloat(document.getElementById('quickSales').value);
+            try {
+                const dateInput = document.getElementById('recordDate');
+                const date = dateInput ? dateInput.value : null;
                 
-                if (isNaN(sales) || sales <= 0) {
-                    await showAlert('请输入有效的业绩金额');
+                if (!date) {
+                    await showAlert('请选择记录日期');
                     return;
                 }
                 
-                record.sales = sales;
-                const result = calculateCommissionFromSales(sales);
-                record.commission = result.commission;
-                record.note = document.getElementById('quickNote').value || '';
-            } else if (currentRecordType === 'leave') {
-                record.note = document.getElementById('leaveNote').value || '请假';
-            } else if (currentRecordType === 'transfer') {
-                record.note = document.getElementById('transferNote').value || '调休';
+                if (!validateRecordDate()) {
+                    await showAlert('请选择有效的日期');
+                    return;
+                }
+                
+                const targetRecord = checkDateRecordType(date);
+                
+                if (targetRecord && targetRecord.hasRecord) {
+                    const existingTypes = [];
+                    if (targetRecord.hasNormal) existingTypes.push('出勤');
+                    if (targetRecord.hasTransfer) existingTypes.push('调休');
+                    if (targetRecord.hasLeave) existingTypes.push('请假');
+                    await showAlert(`今日已创建${existingTypes.join('、')}记录，删除后重新创建`);
+                    return;
+                }
+                
+                const record = {
+                    id: Date.now(),
+                    date: date,
+                    type: currentRecordType,
+                    sales: 0,
+                    commission: 0,
+                    note: '',
+                    images: [...tempUploadedImages],
+                    timestamp: new Date().toISOString()
+                };
+                
+                if (currentRecordType === 'normal') {
+                    const salesInput = document.getElementById('quickSales');
+                    const salesValue = salesInput.value.trim();
+                    
+                    if (!salesValue) {
+                        await showAlert('请输入业绩金额');
+                        salesInput.focus();
+                        return;
+                    }
+                    
+                    const sales = parseFloat(salesValue);
+                    
+                    if (isNaN(sales)) {
+                        await showAlert('请输入有效的数字');
+                        salesInput.select();
+                        return;
+                    }
+                    
+                    if (sales <= 0) {
+                        await showAlert('业绩金额必须大于0');
+                        salesInput.select();
+                        return;
+                    }
+                    
+                    if (sales > 100000000) {
+                        await showAlert('业绩金额超出合理范围');
+                        salesInput.select();
+                        return;
+                    }
+                    
+                    record.sales = sales;
+                    const result = calculateCommissionFromSales(sales);
+                    record.commission = result.commission;
+                    record.note = document.getElementById('quickNote').value.trim().substring(0, 500);
+                } else if (currentRecordType === 'leave') {
+                    record.note = (document.getElementById('leaveNote').value.trim() || '请假').substring(0, 500);
+                } else if (currentRecordType === 'transfer') {
+                    record.note = (document.getElementById('transferNote').value.trim() || '调休').substring(0, 500);
+                }
+                
+                records.push(record);
+                await saveRecords();
+                
+                const typeText = currentRecordType === 'normal' ? '业绩' : (currentRecordType === 'leave' ? '请假' : '调休');
+                await showAlert(`✅ ${typeText}记录已保存`);
+                
+                document.getElementById('quickSales').value = '';
+                document.getElementById('quickCommission').value = '0.00';
+                document.getElementById('quickNote').value = '';
+                document.getElementById('leaveNote').value = '';
+                document.getElementById('transferNote').value = '';
+                tempUploadedImages = [];
+                updateUploadPreview();
+                
+                updateRecordTypeSelector();
+                updateStatistics();
+                updateLatestRecords();
+                updateRecordsList();
+            } finally {
+                isSaving = false;
             }
-            
-            records.push(record);
-            await saveRecords();
-            
-            const typeText = currentRecordType === 'normal' ? '业绩' : (currentRecordType === 'leave' ? '请假' : '调休');
-            await showAlert(`✅ ${typeText}记录已保存`);
-            
-            // 清空表单
-            document.getElementById('quickSales').value = '';
-            document.getElementById('quickCommission').value = '0.00';
-            document.getElementById('quickNote').value = '';
-            document.getElementById('leaveNote').value = '';
-            document.getElementById('transferNote').value = '';
-            tempUploadedImages = [];
-            updateUploadPreview();
-            
-            // 更新记录类型选择器状态
-            updateRecordTypeSelector();
-            
-            // 更新统计
-            updateStatistics();
-            updateLatestRecords();
-            updateRecordsList();
         }
 
-        // 保存底薪
         async function saveBaseSalary() {
-            const baseSalary = parseFloat(document.getElementById('baseSalary').value);
+            const input = document.getElementById('baseSalary');
+            const value = input.value.trim();
             
-            if (isNaN(baseSalary) || baseSalary < 0) {
-                await showAlert('请输入有效的底薪金额');
+            if (!value) {
+                await showAlert('请输入底薪金额');
+                input.focus();
                 return;
+            }
+            
+            const baseSalary = parseFloat(value);
+            
+            if (isNaN(baseSalary)) {
+                await showAlert('请输入有效的数字');
+                input.select();
+                return;
+            }
+            
+            if (baseSalary < 0) {
+                await showAlert('底薪不能为负数');
+                input.select();
+                return;
+            }
+            
+            if (baseSalary > 1000000) {
+                const confirm = await showConfirm('底薪金额较大，确认是否正确？');
+                if (!confirm) return;
             }
             
             settings.baseSalary = baseSalary;
@@ -3606,8 +4130,6 @@
             updateWorkDaysInfo();
         }
 
-        // 保存请假天数
-        // 显示添加阶梯模态框
         function showAddTierModal() {
             // 设置默认值
             const lastTier = settings.tiers[settings.tiers.length - 1];
@@ -3764,6 +4286,8 @@
                 await showAlert('✅ 已恢复默认设置');
             }
         }
+
+
 
         // 清空所有数据
         async function clearAllData() {
@@ -4356,6 +4880,10 @@
             
             document.getElementById('monthStats').innerHTML = `
                 <div class="stats-row">
+                    <span class="stats-label">当月底薪</span>
+                    <span class="stats-value">¥${baseSalaryAmount.toLocaleString()}</span>
+                </div>
+				<div class="stats-row">
                     <span class="stats-label">总业绩</span>
                     <span class="stats-value">¥${totalSales.toLocaleString()}</span>
                 </div>
@@ -4364,15 +4892,7 @@
                     <span class="stats-value">¥${totalCommission.toLocaleString()}</span>
                 </div>
                 <div class="stats-row">
-                    <span class="stats-label">应发底薪</span>
-                    <span class="stats-value">¥${baseSalaryAmount.toLocaleString()}</span>
-                </div>
-                <div class="stats-row">
-                    <span class="stats-label">预估工资</span>
-                    <span class="stats-value" style="color: var(--text-accent); font-size: 1.2rem;">¥${monthlySalary.toLocaleString()}</span>
-                </div>
-                <div class="stats-row">
-                    <span class="stats-label">正常出勤天数</span>
+                    <span class="stats-label">出勤天数</span>
                     <span class="stats-value">${normalDays} 天</span>
                 </div>
                 <div class="stats-row">
@@ -4386,6 +4906,10 @@
                 <div class="stats-row">
                     <span class="stats-label">记录总数</span>
                     <span class="stats-value">${monthRecords.length} 条</span>
+                </div>
+				<div class="stats-row">
+                    <span class="stats-label">实际应发工资</span>
+                    <span class="stats-value" style="color: var(--text-accent); font-size: 1.2rem;">¥${monthlySalary.toLocaleString()}</span>
                 </div>
             `;
         }
@@ -4491,12 +5015,12 @@
                     <div class="year-total-amount">¥${totalYearSalary.toFixed(2)}</div>
                     <div class="year-total-breakdown">
                         <div class="breakdown-item">
-                            <span class="breakdown-label">底薪总和</span>
+                            <span class="breakdown-label">底薪</span>
                             <span class="breakdown-value">¥${totalBaseSalary.toFixed(2)}</span>
                         </div>
                         <div class="breakdown-divider">+</div>
                         <div class="breakdown-item">
-                            <span class="breakdown-label">提成总和</span>
+                            <span class="breakdown-label">提成</span>
                             <span class="breakdown-value">¥${totalCommission.toFixed(2)}</span>
                         </div>
                     </div>
@@ -4572,44 +5096,58 @@
                 </div>
                 ` : ''}
                 
-                <!-- 月度业绩分布 -->
-                <div class="monthly-distribution-section">
-                    <div class="section-title">📈 月度业绩分布</div>
-                    <div class="monthly-grid">
-                        ${Object.entries(monthlyStats).map(([month, stats]) => `
-                            <div class="monthly-card ${stats.hasData ? 'has-data' : ''}" onclick="showMonthDetail(${year}, ${month})">
-                                <div class="monthly-month">${month}月</div>
-                                <div class="monthly-sales">¥${stats.sales.toLocaleString()}</div>
-                                <div class="monthly-commission">提成: ¥${stats.commission.toLocaleString()}</div>
-                                <div class="monthly-salary">工资: ¥${stats.totalSalary.toFixed(0)}</div>
-                                ${stats.hasData ? `<div class="monthly-indicator"></div>` : ''}
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
             `;
         }
 
         // ==================== 图片上传功能 ====================
         
         let tempUploadedImages = [];
-        const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10MB限制（已提升）
-        const MAX_IMAGES_PER_RECORD = 10; // 每条记录最多10张图片
-        const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/bmp']; // 支持的图片格式
 
-        // 初始化拖拽上传
+        async function compressImage(file, maxWidth = CONFIG.IMAGE_MAX_WIDTH, quality = CONFIG.IMAGE_QUALITY) {
+            return new Promise((resolve, reject) => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                
+                img.onload = () => {
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (width > maxWidth) {
+                        height = (height * maxWidth) / width;
+                        width = maxWidth;
+                    }
+                    
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    const compressedData = canvas.toDataURL('image/jpeg', quality);
+                    URL.revokeObjectURL(img.src);
+                    resolve(compressedData);
+                };
+                
+                img.onerror = () => {
+                    URL.revokeObjectURL(img.src);
+                    reject(new Error('图片加载失败'));
+                };
+                
+                img.src = URL.createObjectURL(file);
+            });
+        }
+
         function initDragDrop() {
             const uploadArea = document.getElementById('uploadArea');
             if (!uploadArea) return;
             
+            const preventDefaults = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            };
+            
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
                 uploadArea.addEventListener(eventName, preventDefaults, false);
             });
-            
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
             
             ['dragenter', 'dragover'].forEach(eventName => {
                 uploadArea.addEventListener(eventName, () => {
@@ -4628,84 +5166,62 @@
 
         function handleDrop(e) {
             const dt = e.dataTransfer;
-            const files = dt.files;
-            handleFiles(files);
+            handleFiles(dt.files);
         }
 
         function handleFileSelect(e) {
-            const files = e.target.files;
-            handleFiles(files);
+            handleFiles(e.target.files);
         }
 
-        // 优化版文件处理 - 支持进度显示和格式验证
-        function handleFiles(files) {
+        async function handleFiles(files) {
             if (!files || files.length === 0) return;
             
-            // 检查图片数量限制
-            if (tempUploadedImages.length + files.length > MAX_IMAGES_PER_RECORD) {
-                showAlert(`每条记录最多上传${MAX_IMAGES_PER_RECORD}张图片`);
+            if (tempUploadedImages.length + files.length > CONFIG.MAX_IMAGES_PER_RECORD) {
+                await showAlert(`每条记录最多上传${CONFIG.MAX_IMAGES_PER_RECORD}张图片`);
                 return;
             }
             
-            // 显示上传进度容器
             showUploadProgress();
             
             let processedCount = 0;
             let totalCount = files.length;
             let errorCount = 0;
             
-            Array.from(files).forEach((file, index) => {
-                // 验证文件类型
-                if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
-                    showAlert(`文件 ${file.name} 格式不支持，仅支持 JPG/PNG/GIF/WebP/BMP`);
+            for (const file of Array.from(files)) {
+                if (!CONFIG.ALLOWED_IMAGE_TYPES.includes(file.type)) {
+                    await showAlert(`文件 ${file.name} 格式不支持，仅支持 JPG/PNG/GIF/WebP/BMP`);
                     errorCount++;
                     processedCount++;
                     updateUploadProgress(processedCount, totalCount, errorCount);
-                    return;
+                    continue;
                 }
                 
-                // 验证文件大小
-                if (file.size > MAX_IMAGE_SIZE) {
-                    showAlert(`文件 ${file.name} 超过10MB大小限制`);
+                if (file.size > CONFIG.MAX_IMAGE_SIZE) {
+                    await showAlert(`文件 ${file.name} 超过10MB大小限制`);
                     errorCount++;
                     processedCount++;
                     updateUploadProgress(processedCount, totalCount, errorCount);
-                    return;
+                    continue;
                 }
                 
-                // 使用 FileReader 读取文件，带进度回调
-                const reader = new FileReader();
-                
-                // 进度回调
-                reader.onprogress = (e) => {
-                    if (e.lengthComputable) {
-                        const percentLoaded = Math.round((e.loaded / e.total) * 100);
-                        updateFileProgress(file.name, percentLoaded);
-                    }
-                };
-                
-                reader.onload = (e) => {
-                    tempUploadedImages.push(e.target.result);
+                try {
+                    updateFileProgress(file.name, 50);
+                    const compressedImage = await compressImage(file);
+                    tempUploadedImages.push(compressedImage);
                     updateUploadPreview();
                     processedCount++;
                     updateUploadProgress(processedCount, totalCount, errorCount);
-                };
-                
-                reader.onerror = () => {
-                    showAlert(`读取文件 ${file.name} 失败`);
+                } catch (error) {
+                    console.error('图片处理失败:', error);
                     errorCount++;
                     processedCount++;
                     updateUploadProgress(processedCount, totalCount, errorCount);
-                };
-                
-                reader.readAsDataURL(file);
-            });
+                }
+            }
             
-            // 清空input，允许重复选择相同文件
             document.getElementById('fileInput').value = '';
         }
 
-        // 显示上传进度容器
         function showUploadProgress() {
             let progressContainer = document.getElementById('uploadProgressContainer');
             if (!progressContainer) {
@@ -5195,34 +5711,98 @@
             document.getElementById('recordDetailModal').classList.remove('show');
         }
 
-        // ==================== 错误处理和性能优化 ====================
+        // ==================== 错误处理和资源管理 ====================
         
-        // 全局错误处理
+        const EventManager = {
+            listeners: [],
+            
+            add(element, event, handler, options) {
+                if (!element) return;
+                element.addEventListener(event, handler, options);
+                this.listeners.push({ element, event, handler });
+            },
+            
+            removeAll() {
+                this.listeners.forEach(({ element, event, handler }) => {
+                    if (element) {
+                        element.removeEventListener(event, handler);
+                    }
+                });
+                this.listeners = [];
+            }
+        };
+
+        const TimerManager = {
+            timers: new Set(),
+            
+            setTimeout(callback, delay) {
+                const id = setTimeout(() => {
+                    callback();
+                    this.timers.delete(id);
+                }, delay);
+                this.timers.add(id);
+                return id;
+            },
+            
+            setInterval(callback, delay) {
+                const id = setInterval(callback, delay);
+                this.timers.add(id);
+                return id;
+            },
+            
+            clearTimeout(id) {
+                clearTimeout(id);
+                this.timers.delete(id);
+            },
+            
+            clearInterval(id) {
+                clearInterval(id);
+                this.timers.delete(id);
+            },
+            
+            clearAll() {
+                this.timers.forEach(id => {
+                    clearTimeout(id);
+                    clearInterval(id);
+                });
+                this.timers.clear();
+            }
+        };
+
         window.addEventListener('error', (e) => {
             console.error('全局错误:', e.error);
-            // 可以在这里添加错误上报逻辑
         });
 
         window.addEventListener('unhandledrejection', (e) => {
             console.error('未处理的Promise错误:', e.reason);
-            // 可以在这里添加错误上报逻辑
         });
 
-        // 页面可见性变化处理
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible') {
-                // 页面重新可见时刷新数据
                 updateStatistics();
             }
         });
 
-        // 在线/离线状态处理
         window.addEventListener('online', () => {
             console.log('应用已连接到网络');
         });
 
         window.addEventListener('offline', () => {
             console.log('应用已离线，数据将保存在本地');
+        });
+
+        window.addEventListener('beforeunload', () => {
+            EventManager.removeAll();
+            TimerManager.clearAll();
+            
+            if (fabClickTimer) {
+                clearTimeout(fabClickTimer);
+                fabClickTimer = null;
+            }
+            if (fabHintTimer) {
+                clearTimeout(fabHintTimer);
+                fabHintTimer = null;
+            }
         });
     </script>
 </body>
